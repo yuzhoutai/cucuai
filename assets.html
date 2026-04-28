@@ -1,0 +1,767 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我的资产 · 楚楚顶墙 AI 设计中心</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;700&family=Cinzel:wght@400;600&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --gold:#C9A84C;--gold-light:#E8C97A;--gold-dark:#8B6914;
+    --gold-pale:rgba(201,168,76,0.08);--gold-pale2:rgba(201,168,76,0.14);
+    --bg-primary:#0A0A0F;--bg-secondary:#111118;--bg-card:#14141E;--bg-card2:#1A1A28;
+    --text-primary:#F0EDE5;--text-secondary:#9D9A8E;--text-muted:#5A5850;
+    --border:rgba(201,168,76,0.18);--border-light:rgba(201,168,76,0.08);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;overflow:hidden;}
+  body{font-family:'Noto Sans SC',sans-serif;background:var(--bg-primary);color:var(--text-primary);display:flex;flex-direction:column;}
+  body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(201,168,76,0.05) 0%,transparent 60%);pointer-events:none;z-index:0;}
+
+  /* NAV */
+  nav{position:relative;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:64px;border-bottom:1px solid var(--border);background:rgba(10,10,15,0.92);backdrop-filter:blur(20px);flex-shrink:0;}
+  .nav-logo{display:flex;align-items:center;gap:14px;text-decoration:none;}
+  .nav-logo-mark{width:118px;height:38px;display:block;object-fit:contain;flex-shrink:0;}
+  .nav-logo-text .cn{font-family:'Noto Serif SC',serif;font-size:16px;font-weight:500;color:var(--text-primary);letter-spacing:2px;}
+  .nav-logo-text .en{font-size:9px;color:var(--gold);letter-spacing:3px;font-family:'Cinzel',serif;}
+  .nav-tabs{display:flex;gap:4px;}
+  .nav-tab{display:flex;align-items:center;gap:7px;padding:8px 18px;border-radius:6px;font-size:13px;color:var(--text-secondary);cursor:pointer;transition:all 0.2s;border:none;background:none;text-decoration:none;letter-spacing:0.5px;}
+  .nav-tab svg{width:15px;height:15px;opacity:0.6;}
+  .nav-tab:hover{color:var(--text-primary);background:var(--gold-pale);}
+  .nav-tab.active{color:var(--gold);background:var(--gold-pale);border:1px solid var(--border);}
+  .nav-tab.active svg{opacity:1;}
+  .nav-right{display:flex;align-items:center;gap:12px;}
+  .ai-badge{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:1px solid var(--border);font-size:11px;color:var(--gold);letter-spacing:0.5px;background:var(--gold-pale);}
+  .avatar-btn{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--gold) 0%,var(--gold-dark) 100%);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:white;cursor:pointer;border:2px solid var(--border);}
+
+  /* PAGE */
+  .page-body{display:flex;flex:1;overflow:hidden;position:relative;z-index:1;}
+
+  /* SIDEBAR */
+  .asset-sidebar{
+    width:220px;flex-shrink:0;border-right:1px solid var(--border-light);
+    background:var(--bg-secondary);padding:20px 16px;
+    display:flex;flex-direction:column;gap:4px;
+  }
+  .as-title{font-size:11px;color:var(--text-muted);letter-spacing:2px;font-family:'Cinzel',serif;padding-bottom:14px;border-bottom:1px solid var(--border-light);margin-bottom:8px;}
+  .as-item{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:10px 12px;border-radius:8px;cursor:pointer;
+    transition:all 0.15s;border:1px solid transparent;
+  }
+  .as-item:hover{background:var(--gold-pale);}
+  .as-item.active{background:var(--gold-pale);border-color:var(--border);color:var(--gold);}
+  .as-item-left{display:flex;align-items:center;gap:8px;}
+  .as-item-left svg{width:14px;height:14px;opacity:0.6;}
+  .as-item.active .as-item-left svg{opacity:1;}
+  .as-item-name{font-size:13px;color:var(--text-secondary);}
+  .as-item.active .as-item-name{color:var(--gold);}
+  .as-count{font-size:11px;color:var(--text-muted);background:var(--bg-card);padding:2px 8px;border-radius:20px;}
+  .as-item.active .as-count{background:var(--gold-pale2);color:var(--gold);}
+  .storage-card{
+    margin-top:auto;padding:14px;border-radius:10px;
+    border:1px solid var(--border-light);background:var(--bg-card);
+  }
+  .storage-title{font-size:11px;color:var(--text-muted);margin-bottom:10px;letter-spacing:0.5px;}
+  .storage-bar{height:4px;background:var(--border-light);border-radius:2px;overflow:hidden;margin-bottom:6px;}
+  .storage-fill{height:100%;width:62%;background:linear-gradient(90deg,var(--gold-dark),var(--gold));border-radius:2px;}
+  .storage-info{font-size:11px;color:var(--text-secondary);display:flex;justify-content:space-between;}
+  .upgrade-btn{
+    width:100%;margin-top:12px;padding:8px;border-radius:6px;
+    border:1px solid var(--border);background:none;
+    color:var(--gold);font-size:12px;cursor:pointer;
+    font-family:'Noto Sans SC',sans-serif;transition:all 0.15s;
+  }
+  .upgrade-btn:hover{background:var(--gold-pale);}
+
+  /* MAIN CONTENT */
+  .asset-main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+
+  /* Toolbar */
+  .asset-toolbar{
+    padding:18px 28px;border-bottom:1px solid var(--border-light);
+    display:flex;align-items:center;gap:16px;flex-shrink:0;
+  }
+  .toolbar-title{font-family:'Noto Serif SC',serif;font-size:18px;font-weight:500;letter-spacing:1px;color:var(--text-primary);}
+  .toolbar-count{font-size:13px;color:var(--text-muted);}
+  .toolbar-spacer{flex:1;}
+  .search-box{
+    display:flex;align-items:center;gap:8px;
+    padding:8px 14px;border-radius:8px;
+    border:1px solid var(--border);background:var(--bg-card);
+    min-width:220px;
+  }
+  .search-box svg{width:14px;height:14px;stroke:var(--text-muted);flex-shrink:0;}
+  .search-input{
+    background:none;border:none;outline:none;
+    font-size:13px;color:var(--text-primary);width:100%;
+    font-family:'Noto Sans SC',sans-serif;
+  }
+  .search-input::placeholder{color:var(--text-muted);}
+  .sort-select{
+    padding:8px 12px;border-radius:8px;border:1px solid var(--border);
+    background:var(--bg-card);color:var(--text-secondary);
+    font-size:12px;font-family:'Noto Sans SC',sans-serif;outline:none;cursor:pointer;
+  }
+  .view-toggle{display:flex;gap:4px;}
+  .view-btn{
+    width:32px;height:32px;border-radius:6px;border:1px solid var(--border-light);
+    background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
+    transition:all 0.15s;
+  }
+  .view-btn svg{width:14px;height:14px;stroke:var(--text-muted);}
+  .view-btn.active{background:var(--gold-pale);border-color:var(--border);}
+  .view-btn.active svg{stroke:var(--gold);}
+  .bulk-actions{display:flex;gap:8px;align-items:center;}
+  .bulk-btn{
+    padding:7px 14px;border-radius:6px;border:1px solid var(--border);
+    background:none;color:var(--text-secondary);font-size:12px;cursor:pointer;
+    font-family:'Noto Sans SC',sans-serif;transition:all 0.15s;
+  }
+  .bulk-btn:hover{border-color:var(--gold);color:var(--gold);}
+  .bulk-btn.danger{border-color:rgba(220,50,50,0.3);}
+  .bulk-btn.danger:hover{border-color:rgba(220,50,50,0.8);color:#f87171;}
+
+  /* Stats Bar */
+  .stats-bar{
+    display:flex;padding:14px 28px;gap:24px;
+    border-bottom:1px solid var(--border-light);
+    flex-shrink:0;
+  }
+  .stat-item{display:flex;align-items:center;gap:10px;}
+  .stat-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;}
+  .stat-icon.img{background:rgba(99,153,34,0.12);}
+  .stat-icon.vid{background:rgba(83,74,183,0.12);}
+  .stat-icon.fav{background:rgba(201,168,76,0.12);}
+  .stat-icon svg{width:16px;height:16px;}
+  .stat-num{font-size:20px;font-weight:500;color:var(--text-primary);font-family:'Cinzel',serif;}
+  .stat-label{font-size:11px;color:var(--text-muted);}
+  .stat-divider{width:1px;background:var(--border-light);margin:0 8px;}
+
+  /* Filter Tags */
+  .filter-row{
+    padding:12px 28px;border-bottom:1px solid var(--border-light);
+    display:flex;gap:8px;align-items:center;flex-shrink:0;
+  }
+  .filter-label{font-size:11px;color:var(--text-muted);margin-right:4px;}
+  .filter-tag{
+    padding:5px 14px;border-radius:20px;border:1px solid var(--border-light);
+    background:none;color:var(--text-secondary);font-size:12px;cursor:pointer;
+    font-family:'Noto Sans SC',sans-serif;transition:all 0.15s;
+  }
+  .filter-tag:hover{border-color:rgba(201,168,76,0.4);}
+  .filter-tag.active{border-color:var(--gold);color:var(--gold);background:var(--gold-pale);}
+
+  /* Gallery */
+  .gallery{flex:1;overflow-y:auto;padding:24px 28px;}
+  .gallery::-webkit-scrollbar{width:5px;}
+  .gallery::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+
+  /* Section header */
+  .gallery-section{margin-bottom:28px;}
+  .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+  .section-title{font-size:12px;color:var(--text-muted);letter-spacing:2px;font-family:'Cinzel',serif;display:flex;align-items:center;gap:8px;}
+  .section-title::before{content:'';width:16px;height:1px;background:var(--border);}
+  .section-title::after{content:'';flex:1;height:1px;background:var(--border-light);}
+
+  /* Grid */
+  .asset-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+  .asset-card{
+    background:var(--bg-card);border-radius:12px;
+    border:1px solid var(--border-light);overflow:hidden;
+    cursor:pointer;transition:all 0.2s;position:relative;
+  }
+  .asset-card:hover{border-color:rgba(201,168,76,0.4);transform:translateY(-2px);}
+  .asset-card.selected{border-color:var(--gold);box-shadow:0 0 0 1px rgba(201,168,76,0.3);}
+  .asset-thumbnail{height:140px;position:relative;overflow:hidden;}
+  .asset-thumb-bg{width:100%;height:100%;display:flex;align-items:center;justify-content:center;position:relative;}
+  .asset-thumb-bg svg{width:28px;height:28px;opacity:0.2;}
+  .asset-type-badge{
+    position:absolute;top:8px;left:8px;
+    padding:2px 8px;border-radius:4px;font-size:10px;
+    font-family:'Cinzel',serif;letter-spacing:0.5px;
+  }
+  .badge-img{background:rgba(34,197,94,0.2);color:#4ade80;}
+  .badge-vid{background:rgba(83,74,183,0.2);color:#a5b4fc;}
+  .asset-select-check{
+    position:absolute;top:8px;right:8px;
+    width:20px;height:20px;border-radius:50%;
+    border:1.5px solid rgba(255,255,255,0.3);
+    background:rgba(0,0,0,0.4);
+    display:flex;align-items:center;justify-content:center;
+    transition:all 0.15s;
+  }
+  .asset-card.selected .asset-select-check{
+    background:var(--gold);border-color:var(--gold);
+  }
+  .asset-select-check::after{
+    content:'✓';font-size:10px;color:transparent;
+  }
+  .asset-card.selected .asset-select-check::after{color:white;}
+  .asset-hover-actions{
+    position:absolute;bottom:0;left:0;right:0;
+    background:linear-gradient(transparent,rgba(0,0,0,0.85));
+    padding:20px 10px 10px;
+    display:flex;gap:6px;
+    opacity:0;transition:opacity 0.2s;
+  }
+  .asset-card:hover .asset-hover-actions{opacity:1;}
+  .hover-btn{
+    flex:1;padding:6px;border-radius:6px;border:1px solid rgba(255,255,255,0.2);
+    background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);
+    font-size:11px;cursor:pointer;text-align:center;
+    font-family:'Noto Sans SC',sans-serif;transition:all 0.15s;
+    text-decoration:none;display:block;
+  }
+  .hover-btn:hover{background:rgba(201,168,76,0.3);border-color:var(--gold);color:var(--gold);}
+  .hover-btn.primary{background:rgba(201,168,76,0.6);border-color:var(--gold);color:#0A0A0F;}
+  .asset-info{padding:12px 14px;}
+  .asset-name{font-size:13px;color:var(--text-primary);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .asset-meta-row{display:flex;align-items:center;justify-content:space-between;}
+  .asset-meta{font-size:11px;color:var(--text-muted);}
+  .asset-fav{
+    width:20px;height:20px;border:none;background:none;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .asset-fav svg{width:14px;height:14px;stroke:var(--text-muted);transition:all 0.15s;}
+  .asset-fav.active svg{stroke:var(--gold);fill:var(--gold);}
+  .asset-fav:hover svg{stroke:var(--gold);}
+
+  /* Empty state */
+  .empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 0;color:var(--text-muted);text-align:center;gap:14px;}
+  .empty-state svg{width:48px;height:48px;stroke:var(--border);}
+  .empty-state p{font-size:13px;line-height:1.7;}
+  .go-create{
+    padding:10px 24px;border-radius:8px;
+    background:linear-gradient(135deg,var(--gold) 0%,var(--gold-dark) 100%);
+    color:#0A0A0F;font-size:13px;font-weight:500;cursor:pointer;
+    border:none;font-family:'Noto Sans SC',sans-serif;
+    text-decoration:none;display:inline-block;margin-top:8px;
+  }
+
+  /* Detail Modal */
+  .modal-overlay{
+    display:none;position:fixed;inset:0;z-index:200;
+    background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);
+    align-items:center;justify-content:center;
+  }
+  .modal-overlay.show{display:flex;}
+  .modal{
+    background:var(--bg-card);border-radius:20px;
+    border:1px solid var(--border);width:800px;max-width:90vw;
+    max-height:90vh;overflow:hidden;display:flex;
+    animation:modalIn 0.2s ease-out;
+  }
+  @keyframes modalIn{from{opacity:0;transform:scale(0.96);}to{opacity:1;transform:scale(1);}}
+  .modal-preview{
+    flex:1;background:var(--bg-primary);
+    display:flex;align-items:center;justify-content:center;
+    min-height:400px;position:relative;
+  }
+  .modal-preview-inner{
+    width:90%;height:300px;border-radius:12px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .modal-preview-inner svg{width:48px;height:48px;opacity:0.15;}
+  .modal-sidebar{width:280px;flex-shrink:0;padding:28px 24px;display:flex;flex-direction:column;gap:16px;overflow-y:auto;border-left:1px solid var(--border-light);}
+  .modal-close{
+    position:absolute;top:16px;right:16px;
+    width:32px;height:32px;border-radius:50%;
+    border:1px solid var(--border);background:var(--bg-card);
+    cursor:pointer;display:flex;align-items:center;justify-content:center;
+    color:var(--text-secondary);font-size:18px;z-index:10;
+  }
+  .modal-close:hover{color:var(--text-primary);}
+  .modal-title{font-family:'Noto Serif SC',serif;font-size:17px;font-weight:500;color:var(--text-primary);letter-spacing:0.5px;}
+  .modal-meta{display:flex;flex-direction:column;gap:10px;}
+  .modal-meta-row{display:flex;justify-content:space-between;align-items:center;font-size:12px;}
+  .meta-key{color:var(--text-muted);}
+  .meta-val{color:var(--text-secondary);}
+  .modal-tags{display:flex;gap:6px;flex-wrap:wrap;}
+  .modal-tag{padding:4px 12px;border-radius:20px;border:1px solid var(--border);color:var(--text-muted);font-size:11px;}
+  .modal-actions{display:flex;flex-direction:column;gap:8px;margin-top:auto;}
+  .modal-btn{
+    width:100%;padding:11px;border-radius:8px;font-size:13px;
+    cursor:pointer;font-family:'Noto Sans SC',sans-serif;
+    transition:all 0.15s;text-align:center;
+  }
+  .modal-btn.outline{border:1px solid var(--border);background:none;color:var(--text-secondary);}
+  .modal-btn.outline:hover{border-color:var(--gold);color:var(--gold);}
+  .modal-btn.primary{border:none;background:linear-gradient(135deg,var(--gold) 0%,var(--gold-dark) 100%);color:#0A0A0F;font-weight:500;}
+  .modal-btn.primary:hover{opacity:0.85;}
+  .modal-btn.danger{border:1px solid rgba(220,50,50,0.3);background:none;color:#f87171;}
+  .modal-btn.danger:hover{border-color:rgba(220,50,50,0.8);}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="index.html">
+    <img class="nav-logo-mark" src="logo.png" alt="楚楚顶墙 Logo">
+    <div class="nav-logo-text">
+      <div class="cn">楚楚AI智能体平台</div>
+      <div class="en">AI DESIGN CENTER</div>
+    </div>
+  </a>
+  <div class="nav-tabs">
+    <a href="index.html" class="nav-tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" stroke-linecap="round"/></svg>
+      AI 对话
+    </a>
+    <a href="image.html" class="nav-tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21" stroke-linecap="round"/></svg>
+      图片生成
+    </a>
+    <a href="video.html" class="nav-tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      视频生成
+    </a>
+    <a href="assets.html" class="nav-tab active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7h18M3 12h18M3 17h18" stroke-linecap="round"/></svg>
+      我的资产
+    </a>
+  </div>
+  <div class="nav-right">
+    <div class="ai-badge">已保存 42 个文件</div>
+    <div class="avatar-btn">楚</div>
+  </div>
+</nav>
+
+<div class="page-body">
+  <!-- Sidebar -->
+  <div class="asset-sidebar">
+    <div class="as-title">COLLECTIONS</div>
+    <div class="as-item active" onclick="filterCollection(this,'all')">
+      <div class="as-item-left">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        <span class="as-item-name">全部资产</span>
+      </div>
+      <span class="as-count">42</span>
+    </div>
+    <div class="as-item" onclick="filterCollection(this,'image')">
+      <div class="as-item-left">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21" stroke-linecap="round"/></svg>
+        <span class="as-item-name">效果图</span>
+      </div>
+      <span class="as-count">28</span>
+    </div>
+    <div class="as-item" onclick="filterCollection(this,'video')">
+      <div class="as-item-left">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        <span class="as-item-name">设计视频</span>
+      </div>
+      <span class="as-count">14</span>
+    </div>
+    <div class="as-item" onclick="filterCollection(this,'fav')">
+      <div class="as-item-left">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+        <span class="as-item-name">我的收藏</span>
+      </div>
+      <span class="as-count">8</span>
+    </div>
+    <div style="height:1px;background:var(--border-light);margin:8px 0;"></div>
+    <div class="as-item" onclick="filterCollection(this,'living')">
+      <div class="as-item-left">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span class="as-item-name">客厅方案</span>
+      </div>
+      <span class="as-count">15</span>
+    </div>
+    <div class="as-item" onclick="filterCollection(this,'kitchen')">
+      <div class="as-item-left">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8zM6 1v3M10 1v3M14 1v3"/></svg>
+        <span class="as-item-name">厨卫方案</span>
+      </div>
+      <span class="as-count">10</span>
+    </div>
+    <div class="as-item" onclick="filterCollection(this,'balcony')">
+      <div class="as-item-left">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21h18M9 21V7M15 21V7M9 7a3 3 0 016 0M3 7h18"/></svg>
+        <span class="as-item-name">阳台方案</span>
+      </div>
+      <span class="as-count">7</span>
+    </div>
+    <div class="storage-card">
+      <div class="storage-title">存储空间</div>
+      <div class="storage-bar"><div class="storage-fill"></div></div>
+      <div class="storage-info"><span>6.2 GB 已使用</span><span>10 GB</span></div>
+      <button class="upgrade-btn">升级存储空间</button>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="asset-main">
+    <!-- Toolbar -->
+    <div class="asset-toolbar">
+      <div class="toolbar-title" id="toolbarTitle">全部资产</div>
+      <div class="toolbar-count" id="toolbarCount">共 42 个文件</div>
+      <div class="toolbar-spacer"></div>
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="1.5"/><path d="m21 21-4.35-4.35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <input class="search-input" placeholder="搜索文件名、标签..." oninput="searchAssets(this.value)">
+      </div>
+      <select class="sort-select" onchange="sortAssets(this.value)">
+        <option value="newest">最新生成</option>
+        <option value="oldest">最早生成</option>
+        <option value="name">文件名</option>
+        <option value="size">文件大小</option>
+      </select>
+      <div class="view-toggle">
+        <button class="view-btn active" onclick="setView('grid',this)" title="网格视图">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="14" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="14" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.5"/></svg>
+        </button>
+        <button class="view-btn" onclick="setView('list',this)" title="列表视图">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="bulk-actions" id="bulkActions" style="display:none">
+        <button class="bulk-btn" onclick="downloadSelected()">下载选中</button>
+        <button class="bulk-btn danger" onclick="deleteSelected()">删除选中</button>
+        <button class="bulk-btn" onclick="clearSelection()">取消选择</button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-bar">
+      <div class="stat-item">
+        <div class="stat-icon img">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="#4ade80" stroke-width="1.5"/><circle cx="8.5" cy="8.5" r="1.5" stroke="#4ade80" stroke-width="1.5"/><path d="M21 15l-5-5L5 21" stroke="#4ade80" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div><div class="stat-num">28</div><div class="stat-label">效果图</div></div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <div class="stat-icon vid">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><polygon points="5 3 19 12 5 21 5 3" stroke="#a5b4fc" stroke-width="1.5"/></svg>
+        </div>
+        <div><div class="stat-num">14</div><div class="stat-label">设计视频</div></div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <div class="stat-icon fav">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" stroke="#C9A84C" stroke-width="1.5"/></svg>
+        </div>
+        <div><div class="stat-num">8</div><div class="stat-label">已收藏</div></div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <div style="padding-left:4px;">
+          <div class="stat-num" style="font-size:16px;">6.2 GB</div>
+          <div class="stat-label">已使用存储</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filter-row">
+      <span class="filter-label">筛选：</span>
+      <button class="filter-tag active" onclick="filterTag(this,'all')">全部</button>
+      <button class="filter-tag" onclick="filterTag(this,'sketch')">线稿渲染</button>
+      <button class="filter-tag" onclick="filterTag(this,'edit')">局部修改</button>
+      <button class="filter-tag" onclick="filterTag(this,'floor')">户型生成</button>
+      <button class="filter-tag" onclick="filterTag(this,'style')">风格迁移</button>
+      <button class="filter-tag" onclick="filterTag(this,'video')">视频</button>
+      <button class="filter-tag" onclick="filterTag(this,'today')">今日生成</button>
+    </div>
+
+    <!-- Gallery -->
+    <div class="gallery">
+      <!-- Today Section -->
+      <div class="gallery-section">
+        <div class="section-header">
+          <div class="section-title">今 日</div>
+        </div>
+        <div class="asset-grid">
+          <!-- Card 1 -->
+          <div class="asset-card" onclick="toggleSelect(this)" ondblclick="openModal('客厅现代简约效果图','效果图','线稿渲染','1024×768','2.3 MB','2025-01-20 14:32')">
+            <div class="asset-thumbnail">
+              <div class="asset-thumb-bg" style="background:linear-gradient(135deg,#2A2010,#1A1508,#2E1F0A);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="rgba(201,168,76,0.3)"><rect x="3" y="3" width="18" height="18" rx="3" stroke-width="1"/><circle cx="8.5" cy="8.5" r="1.5" stroke-width="1"/><path d="M21 15l-5-5L5 21" stroke-width="1" stroke-linecap="round"/></svg>
+              </div>
+              <span class="asset-type-badge badge-img">效果图</span>
+              <div class="asset-select-check"></div>
+              <div class="asset-hover-actions">
+                <a class="hover-btn" onclick="event.stopPropagation();openModal('客厅现代简约效果图','效果图','线稿渲染','1024×768','2.3 MB','2025-01-20 14:32')">详情</a>
+                <a class="hover-btn" href="video.html" onclick="event.stopPropagation()">转视频</a>
+                <a class="hover-btn primary" onclick="event.stopPropagation()">下载</a>
+              </div>
+            </div>
+            <div class="asset-info">
+              <div class="asset-name">客厅现代简约效果图</div>
+              <div class="asset-meta-row">
+                <span class="asset-meta">14:32 · 2.3MB</span>
+                <button class="asset-fav active" onclick="event.stopPropagation();toggleFav(this)">
+                  <svg viewBox="0 0 24 24" fill="var(--gold)"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="asset-card" onclick="toggleSelect(this)" ondblclick="openModal('厨房白色集成吊顶','效果图','户型生成','1280×960','3.1 MB','2025-01-20 13:15')">
+            <div class="asset-thumbnail">
+              <div class="asset-thumb-bg" style="background:linear-gradient(135deg,#1A1020,#120C18,#231530);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="rgba(165,180,252,0.3)"><rect x="3" y="3" width="18" height="18" rx="3" stroke-width="1"/><circle cx="8.5" cy="8.5" r="1.5" stroke-width="1"/><path d="M21 15l-5-5L5 21" stroke-width="1" stroke-linecap="round"/></svg>
+              </div>
+              <span class="asset-type-badge badge-img">效果图</span>
+              <div class="asset-select-check"></div>
+              <div class="asset-hover-actions">
+                <a class="hover-btn" onclick="event.stopPropagation();openModal('厨房白色集成吊顶','效果图','户型生成','1280×960','3.1 MB','2025-01-20 13:15')">详情</a>
+                <a class="hover-btn" href="video.html" onclick="event.stopPropagation()">转视频</a>
+                <a class="hover-btn primary" onclick="event.stopPropagation()">下载</a>
+              </div>
+            </div>
+            <div class="asset-info">
+              <div class="asset-name">厨房白色集成吊顶</div>
+              <div class="asset-meta-row">
+                <span class="asset-meta">13:15 · 3.1MB</span>
+                <button class="asset-fav" onclick="event.stopPropagation();toggleFav(this)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3 - Video -->
+          <div class="asset-card" onclick="toggleSelect(this)" ondblclick="openModal('客厅漫游视频','设计视频','即梦AI','1920×1080','45.2 MB','2025-01-20 11:48')">
+            <div class="asset-thumbnail">
+              <div class="asset-thumb-bg" style="background:linear-gradient(135deg,#0C1A10,#081208);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="rgba(165,180,252,0.3)"><polygon points="5 3 19 12 5 21 5 3" stroke-width="1"/></svg>
+              </div>
+              <span class="asset-type-badge badge-vid">视频</span>
+              <div class="asset-select-check"></div>
+              <div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.7);color:rgba(255,255,255,0.7);font-size:9px;padding:2px 6px;border-radius:3px;">0:08</div>
+              <div class="asset-hover-actions">
+                <a class="hover-btn" onclick="event.stopPropagation();openModal('客厅漫游视频','设计视频','即梦AI','1920×1080','45.2 MB','2025-01-20 11:48')">详情</a>
+                <a class="hover-btn primary" onclick="event.stopPropagation()">下载</a>
+              </div>
+            </div>
+            <div class="asset-info">
+              <div class="asset-name">客厅漫游视频</div>
+              <div class="asset-meta-row">
+                <span class="asset-meta">11:48 · 45MB · 8s</span>
+                <button class="asset-fav" onclick="event.stopPropagation();toggleFav(this)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="asset-card" onclick="toggleSelect(this)">
+            <div class="asset-thumbnail">
+              <div class="asset-thumb-bg" style="background:linear-gradient(135deg,#1A1010,#120808);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="rgba(201,168,76,0.2)"><rect x="3" y="3" width="18" height="18" rx="3" stroke-width="1"/><circle cx="8.5" cy="8.5" r="1.5" stroke-width="1"/><path d="M21 15l-5-5L5 21" stroke-width="1" stroke-linecap="round"/></svg>
+              </div>
+              <span class="asset-type-badge badge-img">效果图</span>
+              <div class="asset-select-check"></div>
+              <div class="asset-hover-actions">
+                <a class="hover-btn" onclick="event.stopPropagation()">详情</a>
+                <a class="hover-btn" href="video.html" onclick="event.stopPropagation()">转视频</a>
+                <a class="hover-btn primary" onclick="event.stopPropagation()">下载</a>
+              </div>
+            </div>
+            <div class="asset-info">
+              <div class="asset-name">阳台轻奢风格方案</div>
+              <div class="asset-meta-row">
+                <span class="asset-meta">10:05 · 1.9MB</span>
+                <button class="asset-fav" onclick="event.stopPropagation();toggleFav(this)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Yesterday Section -->
+      <div class="gallery-section">
+        <div class="section-header">
+          <div class="section-title">昨 日</div>
+        </div>
+        <div class="asset-grid">
+          <div class="asset-card" onclick="toggleSelect(this)">
+            <div class="asset-thumbnail">
+              <div class="asset-thumb-bg" style="background:linear-gradient(135deg,#101A10,#0A120A);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="rgba(74,222,128,0.2)"><rect x="3" y="3" width="18" height="18" rx="3" stroke-width="1"/><circle cx="8.5" cy="8.5" r="1.5" stroke-width="1"/><path d="M21 15l-5-5L5 21" stroke-width="1" stroke-linecap="round"/></svg>
+              </div>
+              <span class="asset-type-badge badge-img">效果图</span>
+              <div class="asset-select-check"></div>
+              <div class="asset-hover-actions">
+                <a class="hover-btn" onclick="event.stopPropagation()">详情</a>
+                <a class="hover-btn" href="video.html" onclick="event.stopPropagation()">转视频</a>
+                <a class="hover-btn primary" onclick="event.stopPropagation()">下载</a>
+              </div>
+            </div>
+            <div class="asset-info">
+              <div class="asset-name">卧室新中式吊顶方案</div>
+              <div class="asset-meta-row">
+                <span class="asset-meta">昨天 · 2.8MB</span>
+                <button class="asset-fav active" onclick="event.stopPropagation();toggleFav(this)">
+                  <svg viewBox="0 0 24 24" fill="var(--gold)"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="asset-card" onclick="toggleSelect(this)">
+            <div class="asset-thumbnail">
+              <div class="asset-thumb-bg" style="background:linear-gradient(135deg,#10101A,#0A0A12);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="rgba(165,180,252,0.2)"><polygon points="5 3 19 12 5 21 5 3" stroke-width="1"/></svg>
+              </div>
+              <span class="asset-type-badge badge-vid">视频</span>
+              <div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.7);color:rgba(255,255,255,0.7);font-size:9px;padding:2px 6px;border-radius:3px;">0:15</div>
+              <div class="asset-select-check"></div>
+              <div class="asset-hover-actions">
+                <a class="hover-btn" onclick="event.stopPropagation()">详情</a>
+                <a class="hover-btn primary" onclick="event.stopPropagation()">下载</a>
+              </div>
+            </div>
+            <div class="asset-info">
+              <div class="asset-name">厨卫空间展示视频</div>
+              <div class="asset-meta-row">
+                <span class="asset-meta">昨天 · 68MB · 15s</span>
+                <button class="asset-fav" onclick="event.stopPropagation();toggleFav(this)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="asset-card" onclick="toggleSelect(this)">
+            <div class="asset-thumbnail">
+              <div class="asset-thumb-bg" style="background:linear-gradient(135deg,#1A1518,#120D10);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="rgba(201,168,76,0.15)"><rect x="3" y="3" width="18" height="18" rx="3" stroke-width="1"/><circle cx="8.5" cy="8.5" r="1.5" stroke-width="1"/><path d="M21 15l-5-5L5 21" stroke-width="1" stroke-linecap="round"/></svg>
+              </div>
+              <span class="asset-type-badge badge-img">效果图</span>
+              <div class="asset-select-check"></div>
+              <div class="asset-hover-actions">
+                <a class="hover-btn" onclick="event.stopPropagation()">详情</a>
+                <a class="hover-btn" href="video.html" onclick="event.stopPropagation()">转视频</a>
+                <a class="hover-btn primary" onclick="event.stopPropagation()">下载</a>
+              </div>
+            </div>
+            <div class="asset-info">
+              <div class="asset-name">背景墙局部替换效果</div>
+              <div class="asset-meta-row">
+                <span class="asset-meta">昨天 · 1.6MB</span>
+                <button class="asset-fav" onclick="event.stopPropagation();toggleFav(this)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Detail Modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-preview" id="modalPreview">
+      <button class="modal-close" onclick="document.getElementById('modalOverlay').classList.remove('show')">×</button>
+      <div class="modal-preview-inner" style="background:linear-gradient(135deg,#2A2010,#1A1508,#2E1F0A);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="rgba(201,168,76,0.15)"><rect x="3" y="3" width="18" height="18" rx="3" stroke-width="0.5"/><circle cx="8.5" cy="8.5" r="1.5" stroke-width="0.5"/><path d="M21 15l-5-5L5 21" stroke-width="0.5" stroke-linecap="round"/></svg>
+      </div>
+    </div>
+    <div class="modal-sidebar">
+      <div class="modal-title" id="modalTitle">客厅现代简约效果图</div>
+      <div class="modal-meta">
+        <div class="modal-meta-row"><span class="meta-key">文件类型</span><span class="meta-val" id="modalType">效果图</span></div>
+        <div class="modal-meta-row"><span class="meta-key">生成工作流</span><span class="meta-val" id="modalWF">线稿渲染</span></div>
+        <div class="modal-meta-row"><span class="meta-key">分辨率</span><span class="meta-val" id="modalRes">1024×768</span></div>
+        <div class="modal-meta-row"><span class="meta-key">文件大小</span><span class="meta-val" id="modalSize">2.3 MB</span></div>
+        <div class="modal-meta-row"><span class="meta-key">生成时间</span><span class="meta-val" id="modalDate">2025-01-20 14:32</span></div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">标签</div>
+        <div class="modal-tags">
+          <span class="modal-tag">客厅</span>
+          <span class="modal-tag">现代简约</span>
+          <span class="modal-tag">吊顶</span>
+          <span class="modal-tag">楚楚</span>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-btn outline" onclick="location.href='image.html'">重新生成</button>
+        <button class="modal-btn outline" onclick="location.href='video.html'">生成视频</button>
+        <button class="modal-btn primary">下载文件</button>
+        <button class="modal-btn danger" onclick="document.getElementById('modalOverlay').classList.remove('show')">删除</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let selectedCards=new Set();
+
+function toggleSelect(card){
+  if(card.classList.contains('selected')){
+    card.classList.remove('selected');
+    selectedCards.delete(card);
+  } else {
+    card.classList.add('selected');
+    selectedCards.add(card);
+  }
+  document.getElementById('bulkActions').style.display=selectedCards.size>0?'flex':'none';
+}
+
+function clearSelection(){
+  document.querySelectorAll('.asset-card.selected').forEach(c=>c.classList.remove('selected'));
+  selectedCards.clear();
+  document.getElementById('bulkActions').style.display='none';
+}
+
+function toggleFav(btn){
+  btn.classList.toggle('active');
+  const svg=btn.querySelector('svg');
+  if(btn.classList.contains('active')){
+    svg.setAttribute('fill','var(--gold)');
+    svg.setAttribute('stroke','var(--gold)');
+  } else {
+    svg.setAttribute('fill','none');
+    svg.setAttribute('stroke','var(--text-muted)');
+  }
+}
+
+function filterCollection(el,type){
+  document.querySelectorAll('.as-item').forEach(i=>i.classList.remove('active'));
+  el.classList.add('active');
+  const titles={all:'全部资产',image:'效果图',video:'设计视频',fav:'我的收藏',living:'客厅方案',kitchen:'厨卫方案',balcony:'阳台方案'};
+  const counts={all:42,image:28,video:14,fav:8,living:15,kitchen:10,balcony:7};
+  document.getElementById('toolbarTitle').textContent=titles[type]||'全部资产';
+  document.getElementById('toolbarCount').textContent=`共 ${counts[type]||0} 个文件`;
+}
+
+function filterTag(btn,type){
+  document.querySelectorAll('.filter-tag').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function setView(view,btn){
+  document.querySelectorAll('.view-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function searchAssets(val){ /* Would filter assets */ }
+function sortAssets(val){ /* Would sort assets */ }
+function downloadSelected(){ alert('正在准备下载 '+selectedCards.size+' 个文件...'); }
+function deleteSelected(){ if(confirm('确认删除选中的 '+selectedCards.size+' 个文件？')){ clearSelection(); } }
+
+function openModal(title,type,wf,res,size,date){
+  document.getElementById('modalTitle').textContent=title;
+  document.getElementById('modalType').textContent=type;
+  document.getElementById('modalWF').textContent=wf;
+  document.getElementById('modalRes').textContent=res;
+  document.getElementById('modalSize').textContent=size;
+  document.getElementById('modalDate').textContent=date;
+  document.getElementById('modalOverlay').classList.add('show');
+}
+
+function closeModal(e){
+  if(e.target===document.getElementById('modalOverlay')){
+    document.getElementById('modalOverlay').classList.remove('show');
+  }
+}
+</script>
+</body>
+</html>

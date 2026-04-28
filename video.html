@@ -1,0 +1,575 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>视频生成 · 楚楚顶墙 AI 设计中心</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;700&family=Cinzel:wght@400;600&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold:#C9A84C;--gold-light:#E8C97A;--gold-dark:#8B6914;
+    --gold-pale:rgba(201,168,76,0.08);--gold-pale2:rgba(201,168,76,0.14);
+    --bg-primary:#0A0A0F;--bg-secondary:#111118;--bg-card:#14141E;--bg-card2:#1A1A28;
+    --text-primary:#F0EDE5;--text-secondary:#9D9A8E;--text-muted:#5A5850;
+    --border:rgba(201,168,76,0.18);--border-light:rgba(201,168,76,0.08);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;overflow:hidden;}
+  body{font-family:'Noto Sans SC',sans-serif;background:var(--bg-primary);color:var(--text-primary);display:flex;flex-direction:column;}
+  body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(201,168,76,0.06) 0%,transparent 60%),radial-gradient(ellipse 40% 40% at 10% 80%,rgba(201,168,76,0.04) 0%,transparent 50%);pointer-events:none;z-index:0;}
+
+  nav{position:relative;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:64px;border-bottom:1px solid var(--border);background:rgba(10,10,15,0.92);backdrop-filter:blur(20px);flex-shrink:0;}
+  .nav-logo{display:flex;align-items:center;gap:14px;text-decoration:none;}
+  .nav-logo-mark{width:118px;height:38px;display:block;object-fit:contain;flex-shrink:0;}
+  .nav-logo-text .cn{font-family:'Noto Serif SC',serif;font-size:16px;font-weight:500;color:var(--text-primary);letter-spacing:2px;}
+  .nav-logo-text .en{font-size:9px;color:var(--gold);letter-spacing:3px;font-family:'Cinzel',serif;}
+  .nav-tabs{display:flex;gap:4px;}
+  .nav-tab{display:flex;align-items:center;gap:7px;padding:8px 18px;border-radius:6px;font-size:13px;color:var(--text-secondary);cursor:pointer;transition:all 0.2s;border:none;background:none;text-decoration:none;letter-spacing:0.5px;}
+  .nav-tab svg{width:15px;height:15px;opacity:0.6;}
+  .nav-tab:hover{color:var(--text-primary);background:var(--gold-pale);}
+  .nav-tab.active{color:var(--gold);background:var(--gold-pale);border:1px solid var(--border);}
+  .nav-tab.active svg{opacity:1;}
+  .nav-right{display:flex;align-items:center;gap:12px;}
+  .ai-badge{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:1px solid var(--border);font-size:11px;color:var(--gold);letter-spacing:0.5px;background:var(--gold-pale);}
+  .ai-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+  .avatar-btn{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--gold) 0%,var(--gold-dark) 100%);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:white;cursor:pointer;border:2px solid var(--border);}
+
+  .page-body{display:flex;flex:1;overflow:hidden;position:relative;z-index:1;}
+
+  /* LEFT: Config */
+  .config-panel{
+    width:380px;flex-shrink:0;border-right:1px solid var(--border-light);
+    background:var(--bg-secondary);overflow-y:auto;
+    display:flex;flex-direction:column;
+  }
+  .config-panel::-webkit-scrollbar{width:4px;}
+  .config-panel::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+  .config-header{padding:24px 24px 16px;border-bottom:1px solid var(--border-light);}
+  .config-title{font-family:'Noto Serif SC',serif;font-size:17px;font-weight:500;letter-spacing:1px;color:var(--text-primary);margin-bottom:4px;}
+  .config-sub{font-size:11px;color:var(--text-secondary);}
+  .jimeng-badge{
+    display:inline-flex;align-items:center;gap:6px;margin-top:10px;
+    padding:5px 12px;border-radius:20px;
+    background:rgba(139,105,20,0.15);border:1px solid rgba(201,168,76,0.2);
+    font-size:11px;color:var(--gold);
+  }
+  .config-body{padding:20px 24px;display:flex;flex-direction:column;gap:18px;flex:1;}
+  .form-label{font-size:12px;color:var(--text-secondary);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;}
+  .form-label span{font-size:10px;color:var(--text-muted);}
+  .form-textarea{
+    width:100%;padding:12px 14px;border-radius:10px;
+    border:1px solid var(--border);background:var(--bg-card);
+    color:var(--text-primary);font-size:13px;resize:none;
+    font-family:'Noto Sans SC',sans-serif;outline:none;
+    transition:border-color 0.2s;line-height:1.6;
+  }
+  .form-textarea:focus{border-color:var(--gold);}
+  .form-textarea::placeholder{color:var(--text-muted);}
+  .form-select{
+    width:100%;padding:10px 14px;border-radius:8px;
+    border:1px solid var(--border);background:var(--bg-card);
+    color:var(--text-primary);font-size:13px;
+    font-family:'Noto Sans SC',sans-serif;outline:none;cursor:pointer;
+  }
+  .upload-zone{
+    border:1px dashed rgba(201,168,76,0.3);border-radius:10px;
+    padding:20px;text-align:center;cursor:pointer;
+    transition:all 0.2s;background:var(--bg-card);position:relative;overflow:hidden;
+  }
+  .upload-zone:hover{border-color:var(--gold);background:var(--gold-pale);}
+  .upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+  .upload-icon{width:36px;height:36px;margin:0 auto 8px;border-radius:8px;background:var(--gold-pale2);display:flex;align-items:center;justify-content:center;}
+  .upload-icon svg{width:20px;height:20px;stroke:var(--gold);}
+  .upload-text{font-size:12px;color:var(--text-secondary);}
+  .upload-hint{font-size:11px;color:var(--text-muted);margin-top:4px;}
+  .param-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .tab-switcher{display:flex;gap:6px;padding:4px;background:var(--bg-card);border-radius:8px;border:1px solid var(--border-light);}
+  .tab-sw-btn{
+    flex:1;padding:8px;border-radius:6px;border:none;
+    font-size:12px;cursor:pointer;font-family:'Noto Sans SC',sans-serif;
+    transition:all 0.15s;background:none;color:var(--text-secondary);
+  }
+  .tab-sw-btn.active{background:var(--gold-pale);color:var(--gold);border:1px solid var(--border);}
+  .style-chips{display:flex;gap:8px;flex-wrap:wrap;}
+  .style-chip{
+    padding:6px 14px;border-radius:20px;border:1px solid var(--border);
+    background:none;color:var(--text-secondary);font-size:11px;cursor:pointer;
+    font-family:'Noto Sans SC',sans-serif;transition:all 0.15s;
+  }
+  .style-chip:hover,.style-chip.active{border-color:var(--gold);color:var(--gold);background:var(--gold-pale);}
+  .slider-wrapper{position:relative;}
+  .slider-row{display:flex;align-items:center;gap:12px;}
+  .range-slider{flex:1;accent-color:var(--gold);}
+  .slider-val{font-size:13px;color:var(--gold);font-weight:500;min-width:32px;text-align:right;}
+  .config-footer{padding:20px 24px;border-top:1px solid var(--border-light);}
+  .gen-btn{
+    width:100%;padding:14px;border-radius:10px;border:none;
+    background:linear-gradient(135deg,var(--gold) 0%,var(--gold-dark) 100%);
+    color:#0A0A0F;font-size:15px;font-weight:500;cursor:pointer;
+    font-family:'Noto Serif SC',serif;letter-spacing:2px;
+    transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:10px;
+  }
+  .gen-btn:hover{opacity:0.88;transform:translateY(-1px);}
+  .gen-btn svg{width:18px;height:18px;}
+  .credits-info{text-align:center;font-size:11px;color:var(--text-muted);margin-top:10px;}
+
+  /* RIGHT: Preview + History */
+  .right-area{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+
+  /* Preview */
+  .video-preview-area{
+    flex:1;display:flex;align-items:center;justify-content:center;
+    padding:32px;position:relative;overflow:hidden;
+  }
+  .video-frame{
+    width:100%;max-width:720px;
+    aspect-ratio:16/9;
+    background:var(--bg-card);border-radius:16px;
+    border:1px solid var(--border);
+    display:flex;align-items:center;justify-content:center;
+    position:relative;overflow:hidden;
+  }
+  .video-frame-placeholder{
+    display:flex;flex-direction:column;align-items:center;gap:16px;
+    color:var(--text-muted);text-align:center;
+  }
+  .video-frame-placeholder svg{width:48px;height:48px;stroke:rgba(201,168,76,0.25);}
+  .video-frame-placeholder p{font-size:13px;line-height:1.7;}
+  .video-generating{
+    display:none;flex-direction:column;align-items:center;gap:16px;
+    text-align:center;
+  }
+  .video-progress-ring{position:relative;width:80px;height:80px;}
+  .ring-bg{fill:none;stroke:var(--border-light);}
+  .ring-fill{fill:none;stroke:var(--gold);stroke-linecap:round;stroke-dasharray:220;stroke-dashoffset:220;animation:fillRing 8s ease-out forwards;}
+  @keyframes fillRing{to{stroke-dashoffset:30;}}
+  .ring-text{font-size:14px;fill:var(--gold);font-family:'Noto Sans SC',sans-serif;}
+  .video-gen-label{font-size:13px;color:var(--text-secondary);}
+  .video-gen-steps{display:flex;flex-direction:column;gap:8px;text-align:left;min-width:200px;}
+  .gen-step{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-muted);}
+  .gen-step.done{color:var(--success-text,#4ade80);}
+  .gen-step.active{color:var(--text-secondary);}
+  .gen-step-dot{width:8px;height:8px;border-radius:50%;background:var(--border);flex-shrink:0;}
+  .gen-step.done .gen-step-dot{background:#4ade80;}
+  .gen-step.active .gen-step-dot{background:var(--gold);animation:pulse 1s infinite;}
+  .video-result{display:none;flex-direction:column;align-items:center;gap:16px;width:100%;}
+  .video-player-wrapper{width:100%;max-width:720px;aspect-ratio:16/9;background:var(--bg-card2);border-radius:12px;overflow:hidden;position:relative;}
+  .video-controls{
+    position:absolute;bottom:0;left:0;right:0;
+    background:linear-gradient(transparent,rgba(0,0,0,0.8));
+    padding:20px 16px 12px;display:flex;align-items:center;gap:12px;
+  }
+  .play-pause-btn{
+    width:32px;height:32px;border-radius:50%;
+    background:rgba(201,168,76,0.9);border:none;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .play-pause-btn svg{width:14px;height:14px;fill:white;}
+  .progress-bar{flex:1;height:3px;background:rgba(255,255,255,0.2);border-radius:2px;cursor:pointer;}
+  .progress-fill{height:100%;width:0%;background:var(--gold);border-radius:2px;transition:width 0.1s;}
+  .time-display{font-size:11px;color:rgba(255,255,255,0.6);min-width:70px;}
+  .volume-btn{width:28px;height:28px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .volume-btn svg{width:16px;height:16px;stroke:rgba(255,255,255,0.6);}
+  .video-dummy-bg{width:100%;height:100%;background:linear-gradient(135deg,#1A1408 0%,#0D0C0A 50%,#1E1810 100%);display:flex;align-items:center;justify-content:center;}
+  .video-dummy-icon{opacity:0.15;}
+  .video-dummy-icon svg{width:80px;height:80px;stroke:var(--gold);}
+  .video-result-actions{display:flex;gap:10px;justify-content:center;}
+  .vra-btn{
+    padding:9px 24px;border-radius:8px;font-size:13px;cursor:pointer;
+    font-family:'Noto Sans SC',sans-serif;transition:all 0.15s;
+  }
+  .vra-btn.outline{border:1px solid var(--border);background:none;color:var(--text-secondary);}
+  .vra-btn.outline:hover{border-color:var(--gold);color:var(--gold);}
+  .vra-btn.primary{border:none;background:linear-gradient(135deg,var(--gold) 0%,var(--gold-dark) 100%);color:#0A0A0F;font-weight:500;}
+  .vra-btn.primary:hover{opacity:0.85;}
+
+  /* History strip */
+  .history-strip{
+    height:160px;flex-shrink:0;border-top:1px solid var(--border-light);
+    background:var(--bg-secondary);padding:16px 24px;
+    display:flex;flex-direction:column;
+  }
+  .history-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+  .history-title{font-size:11px;color:var(--text-muted);letter-spacing:1.5px;font-family:'Cinzel',serif;}
+  .view-all-btn{font-size:11px;color:var(--gold);cursor:pointer;background:none;border:none;font-family:'Noto Sans SC',sans-serif;letter-spacing:0.5px;}
+  .history-list{display:flex;gap:12px;overflow-x:auto;padding-bottom:4px;}
+  .history-list::-webkit-scrollbar{height:3px;}
+  .history-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+  .history-card{
+    flex-shrink:0;width:150px;cursor:pointer;border-radius:8px;
+    border:1px solid var(--border-light);background:var(--bg-card);
+    overflow:hidden;transition:border-color 0.2s;
+  }
+  .history-card:hover{border-color:rgba(201,168,76,0.4);}
+  .history-thumb{
+    height:70px;display:flex;align-items:center;justify-content:center;
+    position:relative;
+  }
+  .history-thumb svg{width:24px;height:24px;stroke:rgba(255,255,255,0.3);}
+  .history-play{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    background:rgba(0,0,0,0.3);opacity:0;transition:opacity 0.2s;
+  }
+  .history-play svg{width:20px;height:20px;fill:var(--gold);}
+  .history-card:hover .history-play{opacity:1;}
+  .history-info{padding:8px 10px;}
+  .history-name{font-size:11px;color:var(--text-secondary);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .history-meta{font-size:10px;color:var(--text-muted);}
+  .duration-badge{
+    position:absolute;bottom:4px;right:6px;
+    background:rgba(0,0,0,0.7);color:rgba(255,255,255,0.8);
+    font-size:9px;padding:2px 5px;border-radius:3px;
+  }
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="index.html">
+    <img class="nav-logo-mark" src="logo.png" alt="楚楚顶墙 Logo">
+    <div class="nav-logo-text">
+      <div class="cn">楚楚AI智能体平台</div>
+      <div class="en">AI DESIGN CENTER</div>
+    </div>
+  </a>
+  <div class="nav-tabs">
+    <a href="index.html" class="nav-tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" stroke-linecap="round"/></svg>
+      AI 对话
+    </a>
+    <a href="image.html" class="nav-tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21" stroke-linecap="round"/></svg>
+      图片生成
+    </a>
+    <a href="video.html" class="nav-tab active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      视频生成
+    </a>
+    <a href="assets.html" class="nav-tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7h18M3 12h18M3 17h18" stroke-linecap="round"/></svg>
+      我的资产
+    </a>
+  </div>
+  <div class="nav-right">
+    <div class="ai-badge"><div class="ai-dot"></div>即梦 API 就绪</div>
+    <div class="avatar-btn">楚</div>
+  </div>
+</nav>
+
+<div class="page-body">
+  <!-- Config Panel -->
+  <div class="config-panel">
+    <div class="config-header">
+      <div class="config-title">AI 视频生成</div>
+      <div class="config-sub">将设计图片转化为流畅的空间漫游视频</div>
+      <div class="jimeng-badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        即梦 AI 驱动
+      </div>
+    </div>
+
+    <div class="config-body">
+      <!-- Mode Switch -->
+      <div>
+        <label class="form-label">生成模式</label>
+        <div class="tab-switcher">
+          <button class="tab-sw-btn active" onclick="switchMode(this,'text')">文字生视频</button>
+          <button class="tab-sw-btn" onclick="switchMode(this,'image')">图片生视频</button>
+        </div>
+      </div>
+
+      <!-- Text mode -->
+      <div id="mode-text">
+        <div>
+          <label class="form-label">视频描述 <span>清晰描述场景、运镜、氛围</span></label>
+          <textarea class="form-textarea" rows="5" placeholder="例：镜头从客厅入口缓慢推进，展示楚楚顶墙的铝扣板集成吊顶，暖光灯光从吊顶均匀散发，营造现代轻奢氛围。镜头顺时针环绕客厅360度。"></textarea>
+        </div>
+        <div>
+          <label class="form-label">反向提示词 <span>排除不想要的元素</span></label>
+          <textarea class="form-textarea" rows="2" placeholder="例：模糊、变形、低质量、水印..."></textarea>
+        </div>
+      </div>
+
+      <!-- Image mode -->
+      <div id="mode-image" style="display:none">
+        <div>
+          <label class="form-label">上传参考图片</label>
+          <div class="upload-zone" onclick="this.querySelector('input').click()">
+            <input type="file" accept="image/*" style="display:none">
+            <div class="upload-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21" stroke-linecap="round"/></svg></div>
+            <div class="upload-text">上传效果图或实景照片</div>
+            <div class="upload-hint">AI 将基于此图生成动态视频</div>
+          </div>
+        </div>
+        <div>
+          <label class="form-label">运镜方向描述</label>
+          <textarea class="form-textarea" rows="3" placeholder="例：镜头从左向右平移，展示整个顶墙设计，最后定格在灯光效果上..."></textarea>
+        </div>
+      </div>
+
+      <!-- Camera movement -->
+      <div>
+        <label class="form-label">运镜风格</label>
+        <div class="style-chips">
+          <button class="style-chip active" onclick="toggleChip(this)">缓慢推进</button>
+          <button class="style-chip" onclick="toggleChip(this)">环绕旋转</button>
+          <button class="style-chip" onclick="toggleChip(this)">平行移动</button>
+          <button class="style-chip" onclick="toggleChip(this)">俯仰切换</button>
+          <button class="style-chip" onclick="toggleChip(this)">固定远景</button>
+        </div>
+      </div>
+
+      <div class="param-grid">
+        <div>
+          <label class="form-label">视频时长</label>
+          <select class="form-select">
+            <option>5 秒</option>
+            <option>8 秒</option>
+            <option>15 秒</option>
+            <option>30 秒</option>
+          </select>
+        </div>
+        <div>
+          <label class="form-label">画面比例</label>
+          <select class="form-select">
+            <option>16:9（横屏）</option>
+            <option>9:16（竖屏）</option>
+            <option>1:1（方形）</option>
+          </select>
+        </div>
+        <div>
+          <label class="form-label">分辨率</label>
+          <select class="form-select">
+            <option>1080P</option>
+            <option>720P</option>
+            <option>4K（Beta）</option>
+          </select>
+        </div>
+        <div>
+          <label class="form-label">帧率</label>
+          <select class="form-select">
+            <option>24fps（电影感）</option>
+            <option>30fps（标准）</option>
+            <option>60fps（流畅）</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label class="form-label">创意多样性 <span id="creativityVal">中等 (0.7)</span></label>
+        <div class="slider-row">
+          <input type="range" class="range-slider" min="1" max="10" value="7" oninput="updateSlider(this,'creativityVal',['低 (','高 ('],')')">
+        </div>
+      </div>
+    </div>
+
+    <div class="config-footer">
+      <button class="gen-btn" onclick="startVideoGen()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        生成视频
+      </button>
+      <div class="credits-info">生成5秒视频消耗约 12 积分 · 剩余：328</div>
+    </div>
+  </div>
+
+  <!-- Right: Preview + History -->
+  <div class="right-area">
+    <div class="video-preview-area">
+      <div class="video-frame">
+        <!-- Placeholder -->
+        <div class="video-frame-placeholder" id="videoPlaceholder">
+          <svg viewBox="0 0 24 24" fill="none"><polygon points="5 3 19 12 5 21 5 3" stroke="currentColor" stroke-width="1.5"/></svg>
+          <p>配置参数后<br>点击「生成视频」<br>预览将出现在此处</p>
+        </div>
+
+        <!-- Generating -->
+        <div class="video-generating" id="videoGenerating">
+          <div class="video-progress-ring">
+            <svg width="80" height="80" viewBox="0 0 80 80">
+              <circle class="ring-bg" cx="40" cy="40" r="35" stroke-width="3"/>
+              <circle class="ring-fill" cx="40" cy="40" r="35" stroke-width="3" transform="rotate(-90 40 40)"/>
+              <text class="ring-text" x="40" y="45" text-anchor="middle" font-size="14">生成中</text>
+            </svg>
+          </div>
+          <div class="video-gen-label">即梦 AI 正在创作视频...</div>
+          <div class="video-gen-steps" id="genSteps">
+            <div class="gen-step done"><div class="gen-step-dot"></div>解析创意描述</div>
+            <div class="gen-step active"><div class="gen-step-dot"></div>生成视频帧序列</div>
+            <div class="gen-step"><div class="gen-step-dot"></div>合成与渲染</div>
+            <div class="gen-step"><div class="gen-step-dot"></div>后处理与优化</div>
+          </div>
+        </div>
+
+        <!-- Result -->
+        <div class="video-result" id="videoResult">
+          <div class="video-player-wrapper">
+            <div class="video-dummy-bg">
+              <div class="video-dummy-icon">
+                <svg viewBox="0 0 24 24" fill="none"><polygon points="5 3 19 12 5 21 5 3" stroke="currentColor" stroke-width="1"/></svg>
+              </div>
+            </div>
+            <div class="video-controls">
+              <button class="play-pause-btn" onclick="togglePlay(this)">
+                <svg viewBox="0 0 24 24" id="playIcon"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              </button>
+              <div class="progress-bar" onclick="seekVideo(event,this)">
+                <div class="progress-fill" id="progressFill"></div>
+              </div>
+              <div class="time-display" id="timeDisplay">0:00 / 0:08</div>
+              <button class="volume-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="video-result-actions">
+            <button class="vra-btn outline" onclick="location.href='assets.html'">保存到资产</button>
+            <button class="vra-btn outline" onclick="startVideoGen()">重新生成</button>
+            <button class="vra-btn primary">下载视频</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- History Strip -->
+    <div class="history-strip">
+      <div class="history-header">
+        <div class="history-title">RECENT VIDEOS</div>
+        <button class="view-all-btn" onclick="location.href='assets.html'">查看全部 →</button>
+      </div>
+      <div class="history-list">
+        <div class="history-card" onclick="playHistory()">
+          <div class="history-thumb" style="background:linear-gradient(135deg,#2A2010,#1A1508);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            <div class="history-play"><svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+            <div class="duration-badge">0:08</div>
+          </div>
+          <div class="history-info">
+            <div class="history-name">客厅顶墙漫游视频</div>
+            <div class="history-meta">2025-01-20 · 1080P</div>
+          </div>
+        </div>
+        <div class="history-card" onclick="playHistory()">
+          <div class="history-thumb" style="background:linear-gradient(135deg,#1A1020,#120C18);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            <div class="history-play"><svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+            <div class="duration-badge">0:15</div>
+          </div>
+          <div class="history-info">
+            <div class="history-name">厨卫空间展示</div>
+            <div class="history-meta">2025-01-19 · 1080P</div>
+          </div>
+        </div>
+        <div class="history-card" onclick="playHistory()">
+          <div class="history-thumb" style="background:linear-gradient(135deg,#0C1A10,#081208);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            <div class="history-play"><svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+            <div class="duration-badge">0:05</div>
+          </div>
+          <div class="history-info">
+            <div class="history-name">阳台设计动态展示</div>
+            <div class="history-meta">2025-01-18 · 720P</div>
+          </div>
+        </div>
+        <div class="history-card" onclick="playHistory()">
+          <div class="history-thumb" style="background:linear-gradient(135deg,#1A1010,#120808);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            <div class="history-play"><svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+            <div class="duration-badge">0:30</div>
+          </div>
+          <div class="history-info">
+            <div class="history-name">背景墙效果展示</div>
+            <div class="history-meta">2025-01-17 · 4K</div>
+          </div>
+        </div>
+        <div class="history-card" onclick="playHistory()">
+          <div class="history-thumb" style="background:linear-gradient(135deg,#101A1A,#080C12);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            <div class="history-play"><svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+            <div class="duration-badge">0:08</div>
+          </div>
+          <div class="history-info">
+            <div class="history-name">卧室吊顶旋转</div>
+            <div class="history-meta">2025-01-16 · 1080P</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let isPlaying=false, progressInterval=null, progress=0;
+
+function switchMode(btn,mode){
+  document.querySelectorAll('.tab-sw-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('mode-text').style.display=mode==='text'?'block':'none';
+  document.getElementById('mode-image').style.display=mode==='image'?'block':'none';
+}
+
+function toggleChip(btn){
+  btn.classList.toggle('active');
+}
+
+function updateSlider(input,valId){
+  const v=input.value;
+  const labels=['极低','低','较低','中低','中等','中等','中高','较高','高','极高'];
+  document.getElementById(valId).textContent=labels[Math.floor(v)-1]+' ('+Math.round(v*10)/10+')';
+}
+
+function startVideoGen(){
+  document.getElementById('videoPlaceholder').style.display='none';
+  document.getElementById('videoGenerating').style.display='flex';
+  document.getElementById('videoResult').style.display='none';
+  progress=0; clearInterval(progressInterval);
+  const steps=document.querySelectorAll('#genSteps .gen-step');
+  steps.forEach((s,i)=>{s.className='gen-step'+(i===0?' done':i===1?' active':'');});
+  let stepIdx=1;
+  const stepInterval=setInterval(()=>{
+    if(stepIdx<steps.length){
+      steps[stepIdx-1].className='gen-step done';
+      steps[stepIdx-1].querySelector('.gen-step-dot').style.background='#4ade80';
+      if(stepIdx<steps.length){ steps[stepIdx].className='gen-step active'; }
+      stepIdx++;
+    } else { clearInterval(stepInterval); }
+  },2000);
+  setTimeout(()=>{
+    clearInterval(stepInterval);
+    document.getElementById('videoGenerating').style.display='none';
+    document.getElementById('videoResult').style.display='flex';
+  },8000);
+}
+
+function togglePlay(btn){
+  isPlaying=!isPlaying;
+  btn.querySelector('svg').innerHTML=isPlaying
+    ?'<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>'
+    :'<polygon points="5 3 19 12 5 21 5 3"/>';
+  if(isPlaying){
+    progressInterval=setInterval(()=>{
+      progress=Math.min(100,progress+0.5);
+      document.getElementById('progressFill').style.width=progress+'%';
+      const total=8, cur=Math.floor(total*progress/100);
+      document.getElementById('timeDisplay').textContent=`0:0${cur} / 0:0${total}`;
+      if(progress>=100){clearInterval(progressInterval);isPlaying=false;progress=0;btn.querySelector('svg').innerHTML='<polygon points="5 3 19 12 5 21 5 3"/>';}
+    },80);
+  } else { clearInterval(progressInterval); }
+}
+
+function seekVideo(e,bar){
+  const rect=bar.getBoundingClientRect();
+  progress=Math.max(0,Math.min(100,(e.clientX-rect.left)/rect.width*100));
+  document.getElementById('progressFill').style.width=progress+'%';
+}
+
+function playHistory(){
+  document.getElementById('videoPlaceholder').style.display='none';
+  document.getElementById('videoGenerating').style.display='none';
+  document.getElementById('videoResult').style.display='flex';
+  progress=0;
+  document.getElementById('progressFill').style.width='0%';
+  document.getElementById('timeDisplay').textContent='0:00 / 0:08';
+}
+</script>
+</body>
+</html>
