@@ -1,0 +1,533 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="../assets/images/favicon.png">
+<title>图片生成 · 楚楚顶墙 AI 设计中心</title>
+<script src="../assets/js/auth.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;700&family=Cinzel:wght@400;600&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/image.css">
+<link rel="stylesheet" href="../assets/css/mobile.css" media="screen and (max-width: 768px)">
+</head>
+<body class="image-page">
+
+<nav>
+  <button class="mobile-icon-btn mobile-menu-toggle" type="button" aria-label="打开生成菜单" aria-expanded="false" hidden>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg>
+  </button>
+
+  <a class="nav-logo" href="../index.html">
+    <img class="nav-logo-mark" src="../assets/images/logo.png" alt="楚楚顶墙 Logo">
+    <div class="nav-logo-text">
+      <div class="cn">楚楚AI智能体平台</div>
+      <div class="en">AI DESIGN CENTER</div>
+    </div>
+  </a>
+
+  <button class="mobile-icon-btn mobile-feature-toggle" type="button" aria-label="打开功能菜单" aria-controls="mobileFeatureMenu" aria-expanded="false" hidden>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 6.5h.01M12 12h.01M12 17.5h.01" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+
+  <div class="nav-tabs">
+    <a href="../index.html" class="nav-tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" stroke-linecap="round"/></svg>
+      AI 对话
+    </a>
+    <a href="image.html" class="nav-tab active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21" stroke-linecap="round"/></svg>
+      图片生成
+    </a>
+    <a href="video.html" class="nav-tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      视频生成
+    </a>
+    <a href="assets.html" class="nav-tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7h18M3 12h18M3 17h18" stroke-linecap="round"/></svg>
+      我的资产
+    </a>
+  </div>
+  <div class="nav-right">
+    <div class="ai-badge"><div class="ai-dot"></div>NanoBanana就绪</div>
+    <div class="avatar-btn">楚</div>
+  </div>
+</nav>
+
+<div class="mobile-drawer-mask" id="mobileDrawerMask" aria-hidden="true" hidden></div>
+
+<div class="mobile-feature-menu" id="mobileFeatureMenu" aria-label="功能菜单" hidden>
+  <a href="../index.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.86 9.86 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" stroke-linecap="round"/></svg>
+    AI 对话
+  </a>
+  <a class="active" href="image.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21" stroke-linecap="round"/></svg>
+    图片生成
+  </a>
+  <a href="video.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+    视频生成
+  </a>
+  <a href="assets.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 7h18M3 12h18M3 17h18" stroke-linecap="round"/></svg>
+    我的资产
+  </a>
+</div>
+
+<div class="page-body">
+  <!-- Config Panel -->
+  <div class="config-area" id="configArea">
+    <div class="config-heading">
+      <div class="config-title">方案生成</div>
+      <div class="config-subtitle">上传素材，描述设计需求，生成高质量室内方案效果图</div>
+    </div>
+
+    <!-- Sketch workflow -->
+    <div id="wf-sketch-config">
+      <div class="config-section-title">上传图片</div>
+      <div class="upload-row">
+        <div class="upload-mini" onclick="this.querySelector('input').click()">
+          <input type="file" accept="image/*" onchange="previewUpload(this,'material-preview')" style="display:none">
+          <div id="material-preview" class="upload-empty">
+            <div class="upload-mini-icon">
+              <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" stroke-width="1.5"/><circle cx="8.5" cy="8.5" r="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M21 15l-5-5L5 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </div>
+            <div class="mini-label">上传素材图</div>
+            <div class="mini-tag">JPG / PNG</div>
+          </div>
+        </div>
+        <div class="upload-mini" onclick="openAssetLibrary('asset-preview','资产库图片')">
+          <div id="asset-preview" class="upload-empty">
+            <div class="upload-mini-icon asset">
+              <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="3" stroke="currentColor" stroke-width="1.5"/><path d="M8 8h8M8 12h6M8 16h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </div>
+            <div class="mini-label">上传资产库图片</div>
+            <div class="mini-tag">从资产库选择</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <label class="form-label">描述设计需求</label>
+        <div class="form-textarea prompt-editor" contenteditable="true" role="textbox" aria-label="描述设计需求" data-placeholder="例：现代简约风格客厅，白色天花板，嵌入式灯光，石膏线装饰..."></div>
+      </div>
+
+      <div>
+        <div class="config-section-title" style="margin-bottom:10px;">装修风格</div>
+        <div class="style-chips">
+          <button class="style-chip active" onclick="selectStyle(this)" data-prompt="现代简约风格，（此处删除括号及文字后可填写您想描述的设计内容），超高清 8K、照片级写实、电影级画质、光线追踪、全局光照、物理级真实光影，自然柔光、通透采光、层次明暗过渡，真实材质肌理、质感细腻，人视广角构图、透视精准无畸变、空间纵深层次分明，大师级设计、高级感，低饱和色调、软装精致、细节拉满、极致高清渲染。">现代简约</button>
+          <button class="style-chip" onclick="selectStyle(this)" data-prompt="奶油风格，（此处删除括号及文字后可填写您想描述的设计内容），超高清 8K、照片级写实、电影级画质、光线追踪、全局光照、物理级真实光影，自然柔光、通透采光、层次明暗过渡，真实材质肌理、质感细腻，人视广角构图、透视精准无畸变、空间纵深层次分明，大师级设计、高级感，低饱和色调、软装精致、细节拉满、极致高清渲染。">奶油风</button>
+          <button class="style-chip" onclick="selectStyle(this)" data-prompt="轻奢风格，（此处删除括号及文字后可填写您想描述的设计内容），超高清 8K、照片级写实、电影级画质、光线追踪、全局光照、物理级真实光影，自然柔光、通透采光、层次明暗过渡，真实材质肌理、质感细腻，人视广角构图、透视精准无畸变、空间纵深层次分明，大师级设计、高级感，低饱和色调、软装精致、细节拉满、极致高清渲染。">轻奢</button>
+          <button class="style-chip" onclick="selectStyle(this)" data-prompt="欧式风格，（此处删除括号及文字后可填写您想描述的设计内容），超高清 8K、照片级写实、电影级画质、光线追踪、全局光照、物理级真实光影，自然柔光、通透采光、层次明暗过渡，真实材质肌理、质感细腻，人视广角构图、透视精准无畸变、空间纵深层次分明，大师级设计、高级感，低饱和色调、软装精致、细节拉满、极致高清渲染。">欧式</button>
+          <button class="style-chip" onclick="selectStyle(this)" data-prompt="新中式风格，（此处删除括号及文字后可填写您想描述的设计内容），超高清 8K、照片级写实、电影级画质、光线追踪、全局光照、物理级真实光影，自然柔光、通透采光、层次明暗过渡，真实材质肌理、质感细腻，人视广角构图、透视精准无畸变、空间纵深层次分明，大师级设计、高级感，低饱和色调、软装精致、细节拉满、极致高清渲染。">新中式</button>
+          <button class="style-chip" onclick="selectStyle(this)" data-prompt="北欧风格，（此处删除括号及文字后可填写您想描述的设计内容），超高清 8K、照片级写实、电影级画质、光线追踪、全局光照、物理级真实光影，自然柔光、通透采光、层次明暗过渡，真实材质肌理、质感细腻，人视广角构图、透视精准无畸变、空间纵深层次分明，大师级设计、高级感，低饱和色调、软装精致、细节拉满、极致高清渲染。">北欧风</button>
+          <button class="style-chip" onclick="selectStyle(this)" data-prompt="美式乡村风格，（此处删除括号及文字后可填写您想描述的设计内容），超高清 8K、照片级写实、电影级画质、光线追踪、全局光照、物理级真实光影，自然柔光、通透采光、层次明暗过渡，真实材质肌理、质感细腻，人视广角构图、透视精准无畸变、空间纵深层次分明，大师级设计、高级感，低饱和色调、软装精致、细节拉满、极致高清渲染。">美式乡村</button>
+        </div>
+      </div>
+
+      <div class="param-grid">
+        <div>
+          <label class="form-label">生成数量</label>
+          <select class="form-select"><option>1张</option><option>2张</option><option>3张</option><option>4张</option></select>
+        </div>
+        <div>
+          <label class="form-label">生成质量</label>
+          <select class="form-select"><option>1080p 高清</option><option>2K 精细</option><option>4K 超清</option><option>8K 商业级</option></select>
+        </div>
+      </div>
+
+      <div>
+        <label class="form-label">图片比例</label>
+        <div class="ratio-btns">
+          <button class="ratio-btn active" onclick="selectRatio(this)">1:1</button>
+          <button class="ratio-btn" onclick="selectRatio(this)">4:3</button>
+          <button class="ratio-btn" onclick="selectRatio(this)">16:9</button>
+          <button class="ratio-btn" onclick="selectRatio(this)">9:16</button>
+          <button class="ratio-btn" onclick="selectRatio(this)">3:4</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Generate button (shared) -->
+    <div>
+      <button class="gen-btn" onclick="startGenerate()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        开始生成
+      </button>
+      <div class="coins-info">每生成一张消耗 0.4 积分 · 剩余积分：<span data-coin-balance>328</span></div>
+    </div>
+  </div>
+
+  <!-- Work Area -->
+  <div class="work-area">
+    <!-- Header -->
+    <div class="work-header">
+      <div>
+        <div class="work-title" id="workTitle">生成预览</div>
+        <div class="work-subtitle" id="workSubtitle">方案生成完成后，效果图将在这里展示</div>
+      </div>
+      <div class="step-indicator">
+        <div class="step"><div class="step-num active" id="step1">1</div><div class="step-label active">上传素材</div></div>
+        <div class="step-line"></div>
+        <div class="step"><div class="step-num" id="step2">2</div><div class="step-label">配置参数</div></div>
+        <div class="step-line"></div>
+        <div class="step"><div class="step-num" id="step3">3</div><div class="step-label">生成结果</div></div>
+      </div>
+    </div>
+
+    <div class="work-content">
+      <!-- Config Panel -->
+      <div class="config-area" id="configArea">
+        <!-- Sketch workflow -->
+        <div id="wf-sketch-config">
+          <div class="config-section-title">上传图片</div>
+          <div class="upload-row">
+            <div class="upload-mini" onclick="this.querySelector('input').click()">
+              <input type="file" accept="image/*" onchange="previewUpload(this,'material-preview-hidden')" style="display:none">
+              <div id="material-preview-hidden" class="upload-empty">
+                <div class="upload-mini-icon">
+                  <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" stroke-width="1.5"/><circle cx="8.5" cy="8.5" r="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M21 15l-5-5L5 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                </div>
+                <div class="mini-label">上传素材图</div>
+                <div class="mini-tag">JPG / PNG</div>
+              </div>
+            </div>
+            <div class="upload-mini" onclick="openAssetLibrary('asset-preview-hidden','资产库图片')">
+              <div id="asset-preview-hidden" class="upload-empty">
+                <div class="upload-mini-icon asset">
+                  <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="3" stroke="currentColor" stroke-width="1.5"/><path d="M8 8h8M8 12h6M8 16h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                </div>
+                <div class="mini-label">上传资产库图片</div>
+                <div class="mini-tag">从资产库选择</div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label class="form-label">描述设计需求</label>
+            <div class="form-textarea prompt-editor" contenteditable="true" role="textbox" aria-label="描述设计需求" data-placeholder="例：现代简约风格客厅，白色天花板，嵌入式灯光，石膏线装饰..."></div>
+          </div>
+
+          <div>
+            <div class="config-section-title" style="margin-bottom:10px;">装修风格</div>
+            <div class="style-chips">
+              <button class="style-chip active" onclick="selectStyle(this)" data-prompt="现代简约风格，（此处删除括号及文字后可填写您想描述的设计内容），超高清 8K、照片级写实、电影级画质、光线追踪、全局光照、物理级真实光影，自然柔光、通透采光、层次明暗过渡，真实材质肌理、质感细腻，人视广角构图、透视精准无畸变、空间纵深层次分明，大师级设计、高级感，低饱和色调、软装精致、细节拉满、极致高清渲染。">现代简约</button>
+              <button class="style-chip" onclick="selectStyle(this)" data-prompt="奶油风格，（此处删除括号及文字后可填写您想描述的设计内容），超高清 8K、照片级写实、电影级画质、光线追踪、全局光照、物理级真实光影，自然柔光、通透采光、层次明暗过渡，真实材质肌理、质感细腻，人视广角构图、透视精准无畸变、空间纵深层次分明，大师级设计、高级感，低饱和色调、软装精致、细节拉满、极致高清渲染。">奶油风</button>
+              <button class="style-chip" onclick="selectStyle(this)" data-prompt="轻奢风格，（此处删除括号及文字后可填写您想描述的设计内容），超高清 8K、照片级写实、电影级画质、光线追踪、全局光照、物理级真实光影，自然柔光、通透采光、层次明暗过渡，真实材质肌理、质感细腻，人视广角构图、透视精准无畸变、空间纵深层次分明，大师级设计、高级感，低饱和色调、软装精致、细节拉满、极致高清渲染。">轻奢</button>
+              <button class="style-chip" onclick="selectStyle(this)" data-prompt="欧式风格，（此处删除括号及文字后可填写您想描述的设计内容），超高清 8K、照片级写实、电影级画质、光线追踪、全局光照、物理级真实光影，自然柔光、通透采光、层次明暗过渡，真实材质肌理、质感细腻，人视广角构图、透视精准无畸变、空间纵深层次分明，大师级设计、高级感，低饱和色调、软装精致、细节拉满、极致高清渲染。">欧式</button>
+              <button class="style-chip" onclick="selectStyle(this)" data-prompt="新中式风格，（此处删除括号及文字后可填写您想描述的设计内容），超高清 8K、照片级写实、电影级画质、光线追踪、全局光照、物理级真实光影，自然柔光、通透采光、层次明暗过渡，真实材质肌理、质感细腻，人视广角构图、透视精准无畸变、空间纵深层次分明，大师级设计、高级感，低饱和色调、软装精致、细节拉满、极致高清渲染。">新中式</button>
+              <button class="style-chip" onclick="selectStyle(this)" data-prompt="北欧风格，（此处删除括号及文字后可填写您想描述的设计内容），超高清 8K、照片级写实、电影级画质、光线追踪、全局光照、物理级真实光影，自然柔光、通透采光、层次明暗过渡，真实材质肌理、质感细腻，人视广角构图、透视精准无畸变、空间纵深层次分明，大师级设计、高级感，低饱和色调、软装精致、细节拉满、极致高清渲染。">北欧风</button>
+              <button class="style-chip" onclick="selectStyle(this)" data-prompt="美式乡村风格，（此处删除括号及文字后可填写您想描述的设计内容），超高清 8K、照片级写实、电影级画质、光线追踪、全局光照、物理级真实光影，自然柔光、通透采光、层次明暗过渡，真实材质肌理、质感细腻，人视广角构图、透视精准无畸变、空间纵深层次分明，大师级设计、高级感，低饱和色调、软装精致、细节拉满、极致高清渲染。">美式乡村</button>
+            </div>
+          </div>
+
+          <div class="param-grid">
+            <div>
+              <label class="form-label">生成数量</label>
+              <select class="form-select"><option>1张</option><option>2张</option><option>3张</option><option>4张</option></select>
+            </div>
+            <div>
+              <label class="form-label">生成质量</label>
+              <select class="form-select"><option>1080p 高清</option><option>2K 精细</option><option>4K 超清</option><option>8K 商业级</option></select>
+            </div>
+          </div>
+
+          <div>
+            <label class="form-label">图片比例</label>
+            <div class="ratio-btns">
+              <button class="ratio-btn active" onclick="selectRatio(this)">1:1</button>
+              <button class="ratio-btn" onclick="selectRatio(this)">4:3</button>
+              <button class="ratio-btn" onclick="selectRatio(this)">16:9</button>
+              <button class="ratio-btn" onclick="selectRatio(this)">9:16</button>
+              <button class="ratio-btn" onclick="selectRatio(this)">3:4</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Edit workflow -->
+        <div id="wf-edit-config" style="display:none">
+          <div class="config-section-title">上传参考图片</div>
+          <div class="upload-row">
+            <div class="upload-mini" onclick="this.querySelector('input').click()">
+              <input type="file" accept="image/*" style="display:none">
+              <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" stroke-width="1.5"/><circle cx="8.5" cy="8.5" r="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M21 15l-5-5L5 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              <div class="mini-label">图片 A</div>
+              <div class="mini-tag">原始效果图</div>
+            </div>
+            <div class="upload-mini" onclick="this.querySelector('input').click()">
+              <input type="file" accept="image/*" style="display:none">
+              <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" stroke-width="1.5"/><circle cx="8.5" cy="8.5" r="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M21 15l-5-5L5 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              <div class="mini-label">图片 B</div>
+              <div class="mini-tag">目标元素来源</div>
+            </div>
+          </div>
+          <div class="asset-source-actions">
+            <button class="asset-library-btn split" type="button" onclick="openAssetLibrary('edit-preview-a','图片 A')">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 7h8M8 12h5M8 17h8"/></svg>
+              图片 A 用资产库
+            </button>
+            <button class="asset-library-btn split" type="button" onclick="openAssetLibrary('edit-preview-b','图片 B')">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 7h8M8 12h5M8 17h8"/></svg>
+              图片 B 用资产库
+            </button>
+          </div>
+          <div>
+            <label class="form-label">描述替换内容</label>
+            <textarea class="form-textarea" placeholder="例：将图A中的电视机替换为图B中的壁炉；将图A的顶墙灯具换成图B的款式..."></textarea>
+          </div>
+          <div>
+            <label class="form-label">替换强度</label>
+            <input type="range" style="width:100%;accent-color:var(--gold)" min="1" max="10" value="7">
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);margin-top:4px;"><span>保留原图更多</span><span>替换更彻底</span></div>
+          </div>
+          <div class="param-grid">
+            <div>
+              <label class="form-label">生成数量</label>
+              <select class="form-select"><option>2张</option><option>4张</option></select>
+            </div>
+            <div>
+              <label class="form-label">保留背景</label>
+              <select class="form-select"><option>完全保留</option><option>轻微调整</option></select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Floor plan workflow -->
+        <div id="wf-floor-config" style="display:none">
+          <div class="config-section-title">上传户型图</div>
+          <div class="upload-zone" onclick="this.querySelector('input').click()">
+            <input type="file" accept="image/*" style="display:none">
+            <div class="upload-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+            <div class="upload-text">上传户型平面图</div>
+            <div class="upload-hint">支持 CAD导出图 / 手绘户型图 / 照片</div>
+          </div>
+          <div class="asset-source-actions">
+            <button class="asset-library-btn" type="button" onclick="openAssetLibrary('floor-preview')">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><path d="M4 19V5a2 2 0 012-2h12a2 2 0 012 2v14"/><path d="M8 7h8M8 11h8M8 15h5"/><path d="M3 19h18" stroke-linecap="round"/></svg>
+              用资产库的图片
+            </button>
+          </div>
+          <div>
+            <label class="form-label">目标空间</label>
+            <select class="form-select">
+              <option>客厅</option><option>主卧</option><option>次卧</option>
+              <option>厨房</option><option>卫生间</option><option>阳台</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">装修风格</label>
+            <select class="form-select">
+              <option>现代简约</option><option>轻奢欧式</option><option>新中式</option>
+              <option>北欧风</option><option>美式</option><option>法式</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">顶墙产品系列（楚楚）</label>
+            <select class="form-select">
+              <option>不限定</option>
+              <option>楚楚铝扣板系列</option>
+              <option>楚楚石膏板系列</option>
+              <option>楚楚集成电器系列</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">预算区间</label>
+            <div class="ratio-btns">
+              <button class="ratio-btn active" onclick="selectRatio(this)">经济</button>
+              <button class="ratio-btn" onclick="selectRatio(this)">中档</button>
+              <button class="ratio-btn" onclick="selectRatio(this)">高端</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Style transfer workflow -->
+        <div id="wf-style-config" style="display:none">
+          <div class="config-section-title">上传您的空间图片</div>
+          <div class="upload-zone" onclick="this.querySelector('input').click()">
+            <input type="file" accept="image/*" style="display:none">
+            <div class="upload-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21" stroke-linecap="round"/></svg></div>
+            <div class="upload-text">上传原始空间图</div>
+            <div class="upload-hint">照片或效果图均可</div>
+          </div>
+          <div class="asset-source-actions">
+            <button class="asset-library-btn" type="button" onclick="openAssetLibrary('style-preview')">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><path d="M4 19V5a2 2 0 012-2h12a2 2 0 012 2v14"/><path d="M8 7h8M8 11h8M8 15h5"/><path d="M3 19h18" stroke-linecap="round"/></svg>
+              用资产库的图片
+            </button>
+          </div>
+          <div>
+            <div class="config-section-title" style="margin-bottom:10px;">选择目标风格</div>
+            <div class="style-chips">
+              <button class="style-chip active" onclick="selectStyle(this)">轻奢现代</button>
+              <button class="style-chip" onclick="selectStyle(this)">东方雅韵</button>
+              <button class="style-chip" onclick="selectStyle(this)">法式浪漫</button>
+              <button class="style-chip" onclick="selectStyle(this)">工业复古</button>
+              <button class="style-chip" onclick="selectStyle(this)">日式侘寂</button>
+              <button class="style-chip" onclick="selectStyle(this)">地中海</button>
+            </div>
+          </div>
+          <div>
+            <label class="form-label">风格迁移强度</label>
+            <input type="range" style="width:100%;accent-color:var(--gold)" min="1" max="10" value="6">
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);margin-top:4px;"><span>保留原始结构</span><span>完全风格化</span></div>
+          </div>
+        </div>
+
+        <!-- Generate button (shared) -->
+        <div>
+          <button class="gen-btn" onclick="startGenerate()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            开始生成
+          </button>
+          <div class="coins-info">每生成一张消耗 0.4 积分 · 剩余积分：<span data-coin-balance>328</span></div>
+        </div>
+      </div>
+
+      <!-- Result Area -->
+      <div class="result-area" id="resultArea">
+        <div class="result-placeholder" id="resultPlaceholder">
+          <div class="placeholder-ring">
+            <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" stroke-width="1.5"/><circle cx="8.5" cy="8.5" r="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M21 15l-5-5L5 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <div class="placeholder-text">
+            配置参数后点击<br>「开始生成」<br>效果图将展示在此处
+          </div>
+        </div>
+
+        <!-- Results (shown after generation) -->
+        <div id="resultContent" style="display:none">
+          <div class="result-header">
+            <div class="result-count">已生成 <span style="color:var(--gold)">4</span> 张效果图</div>
+            <div class="result-actions">
+              <button class="result-action-btn" onclick="location.href='assets.html'">保存全部</button>
+              <button class="result-action-btn">重新生成</button>
+            </div>
+          </div>
+          <div class="result-grid">
+            <div class="result-card">
+              <div class="result-img">
+                <div class="result-img-placeholder">
+                  <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" stroke-width="1.5"/><circle cx="8.5" cy="8.5" r="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M21 15l-5-5L5 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                  效果图 A
+                </div>
+              </div>
+              <div class="result-info">
+                <div class="result-title">现代简约 · 客厅效果图 #1</div>
+                <div class="result-meta"><span>1024×768</span><span>2.3MB</span></div>
+                <div class="result-card-actions">
+                  <button class="rca-btn" onclick="useGeneratedAsMaterial(this)">二次修改</button>
+                  <button class="rca-btn primary">下载</button>
+                </div>
+              </div>
+            </div>
+            <div class="result-card">
+              <div class="result-img" style="background:linear-gradient(135deg,#1A1020 0%,#120C18 30%,#231530 60%,#100C15 100%);">
+                <div class="result-img-placeholder">
+                  <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" stroke-width="1.5"/><circle cx="8.5" cy="8.5" r="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M21 15l-5-5L5 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                  效果图 B
+                </div>
+              </div>
+              <div class="result-info">
+                <div class="result-title">现代简约 · 客厅效果图 #2</div>
+                <div class="result-meta"><span>1024×768</span><span>2.1MB</span></div>
+                <div class="result-card-actions">
+                  <button class="rca-btn" onclick="useGeneratedAsMaterial(this)">二次修改</button>
+                  <button class="rca-btn primary">下载</button>
+                </div>
+              </div>
+            </div>
+            <div class="result-card">
+              <div class="result-img" style="background:linear-gradient(135deg,#0C1A10 0%,#081208 30%,#142016 60%,#0A140C 100%);">
+                <div class="result-img-placeholder">
+                  <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" stroke-width="1.5"/><circle cx="8.5" cy="8.5" r="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M21 15l-5-5L5 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                  效果图 C
+                </div>
+              </div>
+              <div class="result-info">
+                <div class="result-title">现代简约 · 客厅效果图 #3</div>
+                <div class="result-meta"><span>1024×768</span><span>2.4MB</span></div>
+                <div class="result-card-actions">
+                  <button class="rca-btn" onclick="useGeneratedAsMaterial(this)">二次修改</button>
+                  <button class="rca-btn primary">下载</button>
+                </div>
+              </div>
+            </div>
+            <div class="result-card">
+              <div class="result-img" style="background:linear-gradient(135deg,#1A1010 0%,#120808 30%,#201515 60%,#140A0A 100%);">
+                <div class="result-img-placeholder">
+                  <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" stroke-width="1.5"/><circle cx="8.5" cy="8.5" r="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M21 15l-5-5L5 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                  效果图 D
+                </div>
+              </div>
+              <div class="result-info">
+                <div class="result-title">现代简约 · 客厅效果图 #4</div>
+                <div class="result-meta"><span>1024×768</span><span>1.9MB</span></div>
+                <div class="result-card-actions">
+                  <button class="rca-btn" onclick="useGeneratedAsMaterial(this)">二次修改</button>
+                  <button class="rca-btn primary">下载</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- History Panel -->
+  <div class="wf-panel">
+    <a class="mobile-drawer-link" href="assets.html" hidden>我的资产</a>
+    <div class="panel-title">历史生成</div>
+    <div class="history-card">
+      <div class="history-thumb">
+        <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" stroke-width="1.5"/><circle cx="8.5" cy="8.5" r="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M21 15l-5-5L5 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <div class="history-info">
+        <div class="history-name">现代简约 · 客厅方案</div>
+        <div class="history-meta">今天 14:26 · 4 张</div>
+      </div>
+    </div>
+    <div class="history-card">
+      <div class="history-thumb" style="background:linear-gradient(135deg,#1A1020 0%,#120C18 44%,#231530 100%);">
+        <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" stroke-width="1.5"/><circle cx="8.5" cy="8.5" r="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M21 15l-5-5L5 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <div class="history-info">
+        <div class="history-name">轻奢欧式 · 卧室方案</div>
+        <div class="history-meta">昨天 18:12 · 2 张</div>
+      </div>
+    </div>
+    <div class="history-card">
+      <div class="history-thumb" style="background:linear-gradient(135deg,#0C1A10 0%,#081208 42%,#142016 100%);">
+        <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" stroke-width="1.5"/><circle cx="8.5" cy="8.5" r="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M21 15l-5-5L5 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <div class="history-info">
+        <div class="history-name">新中式 · 餐厅方案</div>
+        <div class="history-meta">05/06 09:34 · 4 张</div>
+      </div>
+    </div>
+    <div class="mobile-drawer-meta" hidden>
+      <div class="mobile-drawer-meta-label">当前模型 / 积分</div>
+      <div class="mobile-drawer-meta-card">
+        <span>NanoBanana</span>
+        <strong><span data-coin-balance>328</span> 积分</strong>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="asset-modal-overlay" id="assetLibraryModal" onclick="closeAssetLibrary(event)">
+  <div class="asset-modal">
+    <div class="asset-modal-head">
+      <div class="asset-modal-title" id="assetLibraryTitle">选择楚楚资产库图片</div>
+      <button class="asset-modal-close" type="button" onclick="hideAssetLibrary()">×</button>
+    </div>
+    <div class="asset-library-filters" id="assetLibraryFilters"></div>
+    <div class="asset-library-grid" id="assetLibraryGrid"></div>
+  </div>
+</div>
+
+<script src="../assets/js/image.js"></script>
+</body>
+</html>
+
+

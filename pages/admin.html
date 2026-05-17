@@ -1,0 +1,155 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="../assets/images/favicon.png">
+<title>经销商管理后台 · 楚楚顶墙 AI 设计中心</title>
+<script src="../assets/js/auth.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;700&family=Cinzel:wght@400;600&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/admin.css">
+<link rel="stylesheet" href="../assets/css/mobile.css" media="screen and (max-width: 768px)">
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="../index.html">
+    <img class="nav-logo-mark" src="../assets/images/logo.png" alt="楚楚顶墙 Logo">
+    <div class="nav-logo-text">
+      <div class="cn">楚楚AI智能体平台</div>
+      <div class="en">AI DESIGN CENTER</div>
+    </div>
+  </a>
+  <div class="nav-center">
+    <a class="nav-tab active" href="admin.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M4 19V5M4 19h16M8 16V9M12 16V7M16 16v-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      管理后台
+    </a>
+    <a class="nav-tab" href="../index.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.86 9.86 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" stroke-linecap="round"/></svg>
+      设计工作台
+    </a>
+  </div>
+  <div class="nav-right">
+    <div class="dealer-pill" id="dealerPill">经销商后台</div>
+    <div class="avatar-btn">楚</div>
+  </div>
+</nav>
+
+<main>
+  <section class="hero">
+    <div>
+      <div class="eyebrow">DEALER ADMIN</div>
+      <h1>经销商积分与成员管理</h1>
+      <p class="hero-sub">老板统一充值积分，旗下成员生成图片和视频时共同消耗同一个积分池；后台可查看每位成员的使用情况。</p>
+    </div>
+    <button class="primary-btn" type="button" onclick="focusRecharge()">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
+      充值积分
+    </button>
+  </section>
+
+  <section class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">共享积分余额</div>
+      <div class="stat-value" data-coin-balance>0</div>
+      <div class="stat-note">全部成员共用</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">本店成员</div>
+      <div class="stat-value" id="designerCount">0</div>
+      <div class="stat-note">普通账号数量</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">本月累计消费</div>
+      <div class="stat-value" id="usedTotal">0</div>
+      <div class="stat-note">本月图片与视频生成</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">本月累计充值</div>
+      <div class="stat-value" id="rechargeTotal">0</div>
+      <div class="stat-note">本月经销商账户充值</div>
+    </div>
+  </section>
+
+  <section class="dashboard">
+    <div>
+      <div class="panel balance-panel">
+        <div class="balance-row">
+          <div>
+            <div class="panel-title">积分充值系统</div>
+            <div class="balance-num"><span data-coin-balance>0</span> <span style="font-size:16px;">积分</span></div>
+            <div class="balance-meta">当前余额会实时同步给所有普通成员账号，生成操作从这里扣除。</div>
+            <div class="quick-recharge">
+              <button class="amount-btn" type="button" onclick="setRecharge(100)">+100</button>
+              <button class="amount-btn" type="button" onclick="setRecharge(500)">+500</button>
+              <button class="amount-btn" type="button" onclick="setRecharge(1000)">+1000</button>
+            </div>
+            <div class="recharge-form">
+              <input class="recharge-input" id="rechargeAmount" type="number" min="1" step="1" placeholder="输入充值积分">
+              <button class="primary-btn" type="button" onclick="submitRecharge()">确认充值</button>
+            </div>
+          </div>
+          <button class="outline-btn" type="button" onclick="location.href='../index.html'">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            返回工作台
+          </button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <div class="panel-title">成员使用情况</div>
+            <div class="panel-desc">统计每个普通账号的图片、视频生成与积分消耗。</div>
+          </div>
+        </div>
+        <div class="table-scroll">
+          <table class="designer-table">
+            <thead>
+              <tr>
+                <th>成员</th>
+                <th>角色</th>
+                <th>图片</th>
+                <th>视频</th>
+                <th>消费积分</th>
+                <th>占比</th>
+                <th>最近使用</th>
+              </tr>
+            </thead>
+            <tbody id="designerTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <aside class="side-stack">
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <div class="panel-title">消费排行</div>
+            <div class="panel-desc">快速看到本店积分主要使用者。</div>
+          </div>
+        </div>
+        <div class="rank-list" id="rankList"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <div class="panel-title">最近流水</div>
+            <div class="panel-desc">充值和成员生成记录。</div>
+          </div>
+        </div>
+        <div class="tx-list" id="txList"></div>
+      </div>
+    </aside>
+  </section>
+</main>
+
+<div class="toast" id="toast">充值成功</div>
+
+<script src="../assets/js/admin.js"></script>
+</body>
+</html>
+
+
+

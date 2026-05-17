@@ -1,0 +1,74 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="../assets/images/favicon.png">
+<title>登录 · 楚楚顶墙 AI 设计中心</title>
+<script src="../assets/js/auth.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;700&family=Cinzel:wght@400;600&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/login.css">
+<link rel="stylesheet" href="../assets/css/mobile.css" media="screen and (max-width: 768px)">
+</head>
+<body>
+  <main class="login-shell">
+    <section class="brand-panel">
+      <div class="brand-top">
+        <img class="brand-logo" src="../assets/images/logo.png" alt="楚楚顶墙 Logo">
+        <div>
+          <div class="brand-cn">楚楚AI智能体平台</div>
+          <div class="brand-en">AI DESIGN CENTER</div>
+        </div>
+      </div>
+      <div class="brand-main">
+        <div class="eyebrow">WORKFLOW LOGIN</div>
+        <h1>进入 <span>楚楚</span> AI 设计中心</h1>
+        <p class="brand-sub">从智能对话、效果图生成、视频生成到资产管理，统一承接顶墙空间设计工作流。</p>
+        <div class="brand-stats">
+          <div class="stat"><div class="stat-num">AI</div><div class="stat-label">专属设计顾问</div></div>
+          <div class="stat"><div class="stat-num">4</div><div class="stat-label">核心创作模块</div></div>
+        </div>
+      </div>
+      <div class="brand-footer">CUCU INTEGRATED CEILING & WALL · INTELLIGENT DESIGN PLATFORM</div>
+    </section>
+    <section class="form-panel">
+      <form class="login-card" onsubmit="handleLogin(event)">
+        <div class="login-title">账号登录</div>
+        <div class="login-sub">使用设计顾问账号进入工作台，继续管理生成记录与客户方案。</div>
+        <div class="field">
+          <label class="label" for="account">账号</label>
+          <div class="input-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M20 21a8 8 0 10-16 0"/><circle cx="12" cy="7" r="4"/></svg>
+            <input class="login-input" id="account" autocomplete="username" value="cucu.design" placeholder="请输入账号">
+          </div>
+        </div>
+        <div class="field">
+          <label class="label" for="password">密码</label>
+          <div class="input-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>
+            <input class="login-input" id="password" type="password" autocomplete="current-password" value="123456" placeholder="请输入密码">
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="remember"><input type="checkbox" checked>保持登录状态</label>
+          <label class="admin-toggle"><input type="checkbox" id="adminLogin"><span>是否管理员</span></label>
+          <button class="link-btn" type="button">忘记密码</button>
+        </div>
+        <button class="login-btn" type="submit">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 5l7 7-7 7M20 12H4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          登录工作台
+        </button>
+        <div class="error" id="loginError"></div>
+        <div class="quick-login">
+          演示账号已自动填入，可直接登录查看完整界面。
+          <br><button type="button" onclick="demoLogin()">使用演示身份进入</button>
+        </div>
+      </form>
+    </section>
+  </main>
+<script src="../assets/js/login.js"></script>
+</body>
+</html>
+
+
+

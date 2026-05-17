@@ -1,0 +1,440 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="../assets/images/favicon.png">
+<title>我的资产 · 楚楚顶墙 AI 设计中心</title>
+<script src="../assets/js/auth.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;700&family=Cinzel:wght@400;600&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/assets.css">
+<link rel="stylesheet" href="../assets/css/mobile.css" media="screen and (max-width: 768px)">
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="../index.html">
+    <img class="nav-logo-mark" src="../assets/images/logo.png" alt="楚楚顶墙 Logo">
+    <div class="nav-logo-text">
+      <div class="cn">楚楚AI智能体平台</div>
+      <div class="en">AI DESIGN CENTER</div>
+    </div>
+  </a>
+  <div class="nav-tabs">
+    <a href="../index.html" class="nav-tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" stroke-linecap="round"/></svg>
+      AI 对话
+    </a>
+    <a href="image.html" class="nav-tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21" stroke-linecap="round"/></svg>
+      图片生成
+    </a>
+    <a href="video.html" class="nav-tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      视频生成
+    </a>
+    <a href="assets.html" class="nav-tab active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7h18M3 12h18M3 17h18" stroke-linecap="round"/></svg>
+      我的资产
+    </a>
+  </div>
+  <div class="nav-right">
+    <div class="ai-badge">已保存 42 个文件</div>
+    <div class="avatar-btn">楚</div>
+  </div>
+</nav>
+
+<div class="page-body">
+  <!-- Sidebar -->
+  <div class="asset-sidebar">
+    <div class="as-title">全部历史生成</div>
+    <div class="as-item active" onclick="filterCollection(this,'all')">
+      <div class="as-item-left">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        <span class="as-item-name">全部资产</span>
+      </div>
+      <span class="as-count" data-count-for="all">42</span>
+    </div>
+    <div class="as-item" onclick="filterCollection(this,'image')">
+      <div class="as-item-left">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21" stroke-linecap="round"/></svg>
+        <span class="as-item-name">效果图</span>
+      </div>
+      <span class="as-count" data-count-for="image">28</span>
+    </div>
+    <div class="as-item" onclick="filterCollection(this,'video')">
+      <div class="as-item-left">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        <span class="as-item-name">设计视频</span>
+      </div>
+      <span class="as-count" data-count-for="video">14</span>
+    </div>
+    <div class="as-item" onclick="filterCollection(this,'fav')">
+      <div class="as-item-left">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+        <span class="as-item-name">我的收藏</span>
+      </div>
+      <span class="as-count" data-count-for="fav">8</span>
+    </div>
+    <div class="as-item" onclick="filterCollection(this,'cclib')">
+      <div class="as-item-left">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19V5a2 2 0 012-2h12a2 2 0 012 2v14"/><path d="M8 7h8M8 11h8M8 15h5"/><path d="M3 19h18" stroke-linecap="round"/></svg>
+        <span class="as-item-name">楚楚资产库</span>
+      </div>
+      <span class="as-count" data-count-for="cclib">6</span>
+    </div>
+    <div style="height:1px;background:var(--border-light);margin:8px 0;"></div>
+    <div class="folder-head">
+      <div class="folder-label">文件夹</div>
+      <button class="folder-add" onclick="openFolderModal()" title="新建文件夹">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="folder-list" id="folderList">
+      <div class="folder-empty" id="folderEmpty">还没有文件夹，点击 + 创建。</div>
+    </div>
+    <div class="storage-card">
+      <div class="storage-title">存储空间</div>
+      <div class="storage-bar"><div class="storage-fill"></div></div>
+      <div class="storage-info"><span>6.2 GB 已使用</span><span>10 GB</span></div>
+      <button class="upgrade-btn">升级存储空间</button>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="asset-main">
+    <!-- Toolbar -->
+    <div class="asset-toolbar">
+      <div class="toolbar-title" id="toolbarTitle">全部资产</div>
+      <div class="toolbar-count" id="toolbarCount">共 42 个文件</div>
+      <div class="toolbar-spacer"></div>
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="1.5"/><path d="m21 21-4.35-4.35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <input class="search-input" id="assetSearchInput" placeholder="搜索文件名..." onkeydown="if(event.key==='Enter') searchAssets(this.value)">
+        <button class="search-btn" onclick="searchAssets(document.getElementById('assetSearchInput').value)">搜索</button>
+      </div>
+      <div class="bulk-actions" id="bulkActions" style="display:none">
+        <select class="move-select" id="moveFolderSelect" onchange="moveSelectedToFolder(this.value)">
+          <option value="">添加到文件夹</option>
+        </select>
+        <button class="bulk-btn" onclick="downloadSelected()">下载选中</button>
+        <button class="bulk-btn danger" onclick="deleteSelected()">删除选中</button>
+        <button class="bulk-btn" onclick="clearSelection()">取消选择</button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-bar" id="statsBar"></div>
+
+    <!-- Filters -->
+    <div class="filter-row" id="filterRow" style="display:none"></div>
+
+    <!-- Gallery -->
+    <div class="gallery">
+      <div class="gallery-section product-library-section">
+        <div class="section-header">
+          <div class="section-title">楚楚产品素材</div>
+        </div>
+        <div class="asset-grid">
+          <div class="asset-card" data-asset-type="product" data-product-category="lighting" onclick="toggleSelect(this)" ondblclick="openModal('CC-DS900120DFNF-1（Z）','产品素材','照明','产品图','楚楚官网','电器系统')">
+            <div class="asset-thumbnail">
+              <div class="asset-thumb-bg"><img src="https://oss.cucu.com.cn/SourcePhoto/20244/20244258101_3857.png" alt="CC-DS900120DFNF-1（Z）"></div>
+              <span class="asset-type-badge badge-img">照明</span>
+              <div class="asset-select-check"></div>
+              <div class="asset-hover-actions">
+                <a class="hover-btn" onclick="event.stopPropagation();openModal('CC-DS900120DFNF-1（Z）','产品素材','照明','产品图','楚楚官网','电器系统')">详情</a>
+                <a class="hover-btn primary" onclick="event.stopPropagation()">添加</a>
+              </div>
+            </div>
+            <div class="asset-info"><div class="asset-name">CC-DS900120DFNF-1（Z）</div><div class="asset-meta-row"><span class="asset-meta">电器系统 · 照明</span><button class="asset-fav" onclick="event.stopPropagation();toggleFav(this)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></button></div></div>
+          </div>
+          <div class="asset-card" data-asset-type="product" data-product-category="lighting" onclick="toggleSelect(this)" ondblclick="openModal('CC-DS900120LB-3Z','产品素材','照明','产品图','楚楚官网','电器系统')">
+            <div class="asset-thumbnail">
+              <div class="asset-thumb-bg"><img src="https://oss.cucu.com.cn/SourcePhoto/20244/20244258922_4493.png" alt="CC-DS900120LB-3Z"></div>
+              <span class="asset-type-badge badge-img">照明</span>
+              <div class="asset-select-check"></div>
+              <div class="asset-hover-actions"><a class="hover-btn" onclick="event.stopPropagation();openModal('CC-DS900120LB-3Z','产品素材','照明','产品图','楚楚官网','电器系统')">详情</a><a class="hover-btn primary" onclick="event.stopPropagation()">添加</a></div>
+            </div>
+            <div class="asset-info"><div class="asset-name">CC-DS900120LB-3Z</div><div class="asset-meta-row"><span class="asset-meta">电器系统 · 照明</span><button class="asset-fav" onclick="event.stopPropagation();toggleFav(this)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></button></div></div>
+          </div>
+          <div class="asset-card" data-asset-type="product" data-product-category="lighting" onclick="toggleSelect(this)" ondblclick="openModal('CC-DS30042LB-4Z','产品素材','照明','产品图','楚楚官网','电器系统')">
+            <div class="asset-thumbnail">
+              <div class="asset-thumb-bg"><img src="https://oss.cucu.com.cn/SourcePhoto/20244/20244258834_1578.png" alt="CC-DS30042LB-4Z"></div>
+              <span class="asset-type-badge badge-img">照明</span>
+              <div class="asset-select-check"></div>
+              <div class="asset-hover-actions"><a class="hover-btn" onclick="event.stopPropagation();openModal('CC-DS30042LB-4Z','产品素材','照明','产品图','楚楚官网','电器系统')">详情</a><a class="hover-btn primary" onclick="event.stopPropagation()">添加</a></div>
+            </div>
+            <div class="asset-info"><div class="asset-name">CC-DS30042LB-4Z</div><div class="asset-meta-row"><span class="asset-meta">电器系统 · 照明</span><button class="asset-fav" onclick="event.stopPropagation();toggleFav(this)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></button></div></div>
+          </div>
+          <div class="asset-card" data-asset-type="product" data-product-category="heating" onclick="toggleSelect(this)" ondblclick="openModal('CC-DS900120DFNF-7Z','产品素材','取暖','产品图','楚楚官网','电器系统')">
+            <div class="asset-thumbnail">
+              <div class="asset-thumb-bg"><img src="https://oss.cucu.com.cn/SourcePhoto/20244/20244258757_4652.png" alt="CC-DS900120DFNF-7Z"></div>
+              <span class="asset-type-badge badge-img">取暖</span>
+              <div class="asset-select-check"></div>
+              <div class="asset-hover-actions"><a class="hover-btn" onclick="event.stopPropagation();openModal('CC-DS900120DFNF-7Z','产品素材','取暖','产品图','楚楚官网','电器系统')">详情</a><a class="hover-btn primary" onclick="event.stopPropagation()">添加</a></div>
+            </div>
+            <div class="asset-info"><div class="asset-name">CC-DS900120DFNF-7Z</div><div class="asset-meta-row"><span class="asset-meta">电器系统 · 取暖</span><button class="asset-fav" onclick="event.stopPropagation();toggleFav(this)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></button></div></div>
+          </div>
+          <div class="asset-card" data-asset-type="product" data-product-category="lighting" onclick="toggleSelect(this)" ondblclick="openModal('CC-DS900120LB-3z','产品素材','照明','产品图','楚楚官网','电器系统')">
+            <div class="asset-thumbnail">
+              <div class="asset-thumb-bg"><img src="https://oss.cucu.com.cn/SourcePhoto/20244/20244258719_726.png" alt="CC-DS900120LB-3z"></div>
+              <span class="asset-type-badge badge-img">照明</span>
+              <div class="asset-select-check"></div>
+              <div class="asset-hover-actions"><a class="hover-btn" onclick="event.stopPropagation();openModal('CC-DS900120LB-3z','产品素材','照明','产品图','楚楚官网','电器系统')">详情</a><a class="hover-btn primary" onclick="event.stopPropagation()">添加</a></div>
+            </div>
+            <div class="asset-info"><div class="asset-name">CC-DS900120LB-3z</div><div class="asset-meta-row"><span class="asset-meta">电器系统 · 照明</span><button class="asset-fav" onclick="event.stopPropagation();toggleFav(this)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></button></div></div>
+          </div>
+          <div class="asset-card" data-asset-type="product" data-product-category="heating" onclick="toggleSelect(this)" ondblclick="openModal('CC-DS30042DFNF-11Z','产品素材','取暖','产品图','楚楚官网','电器系统')">
+            <div class="asset-thumbnail">
+              <div class="asset-thumb-bg"><img src="https://oss.cucu.com.cn/SourcePhoto/20244/2024425874_6555.png" alt="CC-DS30042DFNF-11Z"></div>
+              <span class="asset-type-badge badge-img">取暖</span>
+              <div class="asset-select-check"></div>
+              <div class="asset-hover-actions"><a class="hover-btn" onclick="event.stopPropagation();openModal('CC-DS30042DFNF-11Z','产品素材','取暖','产品图','楚楚官网','电器系统')">详情</a><a class="hover-btn primary" onclick="event.stopPropagation()">添加</a></div>
+            </div>
+            <div class="asset-info"><div class="asset-name">CC-DS30042DFNF-11Z</div><div class="asset-meta-row"><span class="asset-meta">电器系统 · 取暖</span><button class="asset-fav" onclick="event.stopPropagation();toggleFav(this)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></button></div></div>
+          </div>
+        </div>
+      </div>
+      <!-- Today Section -->
+      <div class="gallery-section">
+        <div class="section-header">
+          <div class="section-title">今 日</div>
+        </div>
+        <div class="asset-grid">
+          <!-- Card 1 -->
+          <div class="asset-card" onclick="toggleSelect(this)" ondblclick="openModal('客厅现代简约效果图','效果图','线稿渲染','1024×768','2.3 MB','2025-01-20 14:32')">
+            <div class="asset-thumbnail">
+              <div class="asset-thumb-bg" style="background:linear-gradient(135deg,#2A2010,#1A1508,#2E1F0A);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="rgba(197,106,74,0.3)"><rect x="3" y="3" width="18" height="18" rx="3" stroke-width="1"/><circle cx="8.5" cy="8.5" r="1.5" stroke-width="1"/><path d="M21 15l-5-5L5 21" stroke-width="1" stroke-linecap="round"/></svg>
+              </div>
+              <span class="asset-type-badge badge-img">效果图</span>
+              <div class="asset-select-check"></div>
+              <div class="asset-hover-actions">
+                <a class="hover-btn" onclick="event.stopPropagation();openModal('客厅现代简约效果图','效果图','线稿渲染','1024×768','2.3 MB','2025-01-20 14:32')">详情</a>
+                <a class="hover-btn" href="video.html" onclick="event.stopPropagation()">转视频</a>
+                <a class="hover-btn primary" onclick="event.stopPropagation()">下载</a>
+              </div>
+            </div>
+            <div class="asset-info">
+              <div class="asset-name">客厅现代简约效果图</div>
+              <div class="asset-meta-row">
+                <span class="asset-meta">14:32 · 2.3MB</span>
+                <button class="asset-fav active" onclick="event.stopPropagation();toggleFav(this)">
+                  <svg viewBox="0 0 24 24" fill="var(--gold)"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="asset-card" onclick="toggleSelect(this)" ondblclick="openModal('厨房白色集成吊顶','效果图','户型生成','1280×960','3.1 MB','2025-01-20 13:15')">
+            <div class="asset-thumbnail">
+              <div class="asset-thumb-bg" style="background:linear-gradient(135deg,#1A1020,#120C18,#231530);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="rgba(165,180,252,0.3)"><rect x="3" y="3" width="18" height="18" rx="3" stroke-width="1"/><circle cx="8.5" cy="8.5" r="1.5" stroke-width="1"/><path d="M21 15l-5-5L5 21" stroke-width="1" stroke-linecap="round"/></svg>
+              </div>
+              <span class="asset-type-badge badge-img">效果图</span>
+              <div class="asset-select-check"></div>
+              <div class="asset-hover-actions">
+                <a class="hover-btn" onclick="event.stopPropagation();openModal('厨房白色集成吊顶','效果图','户型生成','1280×960','3.1 MB','2025-01-20 13:15')">详情</a>
+                <a class="hover-btn" href="video.html" onclick="event.stopPropagation()">转视频</a>
+                <a class="hover-btn primary" onclick="event.stopPropagation()">下载</a>
+              </div>
+            </div>
+            <div class="asset-info">
+              <div class="asset-name">厨房白色集成吊顶</div>
+              <div class="asset-meta-row">
+                <span class="asset-meta">13:15 · 3.1MB</span>
+                <button class="asset-fav" onclick="event.stopPropagation();toggleFav(this)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3 - Video -->
+          <div class="asset-card" onclick="toggleSelect(this)" ondblclick="openModal('客厅漫游视频','设计视频','即梦AI','1920×1080','45.2 MB','2025-01-20 11:48')">
+            <div class="asset-thumbnail">
+              <div class="asset-thumb-bg" style="background:linear-gradient(135deg,#0C1A10,#081208);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="rgba(165,180,252,0.3)"><polygon points="5 3 19 12 5 21 5 3" stroke-width="1"/></svg>
+              </div>
+              <span class="asset-type-badge badge-vid">视频</span>
+              <div class="asset-select-check"></div>
+              <div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.7);color:rgba(255,255,255,0.7);font-size:9px;padding:2px 6px;border-radius:3px;">0:08</div>
+              <div class="asset-hover-actions">
+                <a class="hover-btn" onclick="event.stopPropagation();openModal('客厅漫游视频','设计视频','即梦AI','1920×1080','45.2 MB','2025-01-20 11:48')">详情</a>
+                <a class="hover-btn primary" onclick="event.stopPropagation()">下载</a>
+              </div>
+            </div>
+            <div class="asset-info">
+              <div class="asset-name">客厅漫游视频</div>
+              <div class="asset-meta-row">
+                <span class="asset-meta">11:48 · 45MB · 8s</span>
+                <button class="asset-fav" onclick="event.stopPropagation();toggleFav(this)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="asset-card" onclick="toggleSelect(this)" ondblclick="openModal('阳台轻奢风格方案','效果图','风格迁移','1024×768','1.9 MB','2025-01-20 10:05')">
+            <div class="asset-thumbnail">
+              <div class="asset-thumb-bg" style="background:linear-gradient(135deg,#1A1010,#120808);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="rgba(197,106,74,0.2)"><rect x="3" y="3" width="18" height="18" rx="3" stroke-width="1"/><circle cx="8.5" cy="8.5" r="1.5" stroke-width="1"/><path d="M21 15l-5-5L5 21" stroke-width="1" stroke-linecap="round"/></svg>
+              </div>
+              <span class="asset-type-badge badge-img">效果图</span>
+              <div class="asset-select-check"></div>
+              <div class="asset-hover-actions">
+                <a class="hover-btn" onclick="event.stopPropagation();openModal('阳台轻奢风格方案','效果图','风格迁移','1024×768','1.9 MB','2025-01-20 10:05')">详情</a>
+                <a class="hover-btn" href="video.html" onclick="event.stopPropagation()">转视频</a>
+                <a class="hover-btn primary" onclick="event.stopPropagation()">下载</a>
+              </div>
+            </div>
+            <div class="asset-info">
+              <div class="asset-name">阳台轻奢风格方案</div>
+              <div class="asset-meta-row">
+                <span class="asset-meta">10:05 · 1.9MB</span>
+                <button class="asset-fav" onclick="event.stopPropagation();toggleFav(this)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Yesterday Section -->
+      <div class="gallery-section">
+        <div class="section-header">
+          <div class="section-title">历史</div>
+        </div>
+        <div class="asset-grid">
+          <div class="asset-card" onclick="toggleSelect(this)" ondblclick="openModal('卧室新中式吊顶方案','效果图','风格迁移','1280×960','2.8 MB','2025-01-19 09:40')">
+            <div class="asset-thumbnail">
+              <div class="asset-thumb-bg" style="background:linear-gradient(135deg,#101A10,#0A120A);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="rgba(74,222,128,0.2)"><rect x="3" y="3" width="18" height="18" rx="3" stroke-width="1"/><circle cx="8.5" cy="8.5" r="1.5" stroke-width="1"/><path d="M21 15l-5-5L5 21" stroke-width="1" stroke-linecap="round"/></svg>
+              </div>
+              <span class="asset-type-badge badge-img">效果图</span>
+              <div class="asset-select-check"></div>
+              <div class="asset-hover-actions">
+                <a class="hover-btn" onclick="event.stopPropagation();openModal('卧室新中式吊顶方案','效果图','风格迁移','1280×960','2.8 MB','2025-01-19 09:40')">详情</a>
+                <a class="hover-btn" href="video.html" onclick="event.stopPropagation()">转视频</a>
+                <a class="hover-btn primary" onclick="event.stopPropagation()">下载</a>
+              </div>
+            </div>
+            <div class="asset-info">
+              <div class="asset-name">卧室新中式吊顶方案</div>
+              <div class="asset-meta-row">
+                <span class="asset-meta">昨天 · 2.8MB</span>
+                <button class="asset-fav active" onclick="event.stopPropagation();toggleFav(this)">
+                  <svg viewBox="0 0 24 24" fill="var(--gold)"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="asset-card" onclick="toggleSelect(this)" ondblclick="openModal('厨卫空间展示视频','设计视频','即梦AI','1920×1080','68 MB','2025-01-19 16:20')">
+            <div class="asset-thumbnail">
+              <div class="asset-thumb-bg" style="background:linear-gradient(135deg,#10101A,#0A0A12);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="rgba(165,180,252,0.2)"><polygon points="5 3 19 12 5 21 5 3" stroke-width="1"/></svg>
+              </div>
+              <span class="asset-type-badge badge-vid">视频</span>
+              <div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.7);color:rgba(255,255,255,0.7);font-size:9px;padding:2px 6px;border-radius:3px;">0:15</div>
+              <div class="asset-select-check"></div>
+              <div class="asset-hover-actions">
+                <a class="hover-btn" onclick="event.stopPropagation();openModal('厨卫空间展示视频','设计视频','即梦AI','1920×1080','68 MB','2025-01-19 16:20')">详情</a>
+                <a class="hover-btn primary" onclick="event.stopPropagation()">下载</a>
+              </div>
+            </div>
+            <div class="asset-info">
+              <div class="asset-name">厨卫空间展示视频</div>
+              <div class="asset-meta-row">
+                <span class="asset-meta">昨天 · 68MB · 15s</span>
+                <button class="asset-fav" onclick="event.stopPropagation();toggleFav(this)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="asset-card" onclick="toggleSelect(this)">
+            <div class="asset-thumbnail">
+              <div class="asset-thumb-bg" style="background:linear-gradient(135deg,#1A1518,#120D10);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="rgba(197,106,74,0.15)"><rect x="3" y="3" width="18" height="18" rx="3" stroke-width="1"/><circle cx="8.5" cy="8.5" r="1.5" stroke-width="1"/><path d="M21 15l-5-5L5 21" stroke-width="1" stroke-linecap="round"/></svg>
+              </div>
+              <span class="asset-type-badge badge-img">效果图</span>
+              <div class="asset-select-check"></div>
+              <div class="asset-hover-actions">
+                <a class="hover-btn" onclick="event.stopPropagation()">详情</a>
+                <a class="hover-btn" href="video.html" onclick="event.stopPropagation()">转视频</a>
+                <a class="hover-btn primary" onclick="event.stopPropagation()">下载</a>
+              </div>
+            </div>
+            <div class="asset-info">
+              <div class="asset-name">背景墙局部替换效果</div>
+              <div class="asset-meta-row">
+                <span class="asset-meta">昨天 · 1.6MB</span>
+                <button class="asset-fav" onclick="event.stopPropagation();toggleFav(this)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Detail Modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-preview" id="modalPreview">
+      <button class="modal-close" onclick="hideDetailModal()">×</button>
+      <div class="modal-preview-inner" style="background:linear-gradient(135deg,#2A2010,#1A1508,#2E1F0A);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="rgba(197,106,74,0.15)"><rect x="3" y="3" width="18" height="18" rx="3" stroke-width="0.5"/><circle cx="8.5" cy="8.5" r="1.5" stroke-width="0.5"/><path d="M21 15l-5-5L5 21" stroke-width="0.5" stroke-linecap="round"/></svg>
+      </div>
+    </div>
+    <div class="modal-sidebar">
+      <div class="modal-title" id="modalTitle">客厅现代简约效果图</div>
+      <div class="modal-meta">
+        <div class="modal-meta-row"><span class="meta-key">文件类型</span><span class="meta-val" id="modalType">效果图</span></div>
+        <div class="modal-meta-row"><span class="meta-key">生成工作流</span><span class="meta-val" id="modalWF">线稿渲染</span></div>
+        <div class="modal-meta-row"><span class="meta-key">分辨率</span><span class="meta-val" id="modalRes">1024×768</span></div>
+        <div class="modal-meta-row"><span class="meta-key">文件大小</span><span class="meta-val" id="modalSize">2.3 MB</span></div>
+        <div class="modal-meta-row"><span class="meta-key">生成时间</span><span class="meta-val" id="modalDate">2025-01-20 14:32</span></div>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-btn outline" id="modalRegenerateBtn" onclick="location.href='image.html'">重新生成</button>
+        <button class="modal-btn outline" id="modalVideoBtn" onclick="location.href='video.html'">生成视频</button>
+        <button class="modal-btn primary" id="modalDownloadBtn">下载文件</button>
+        <button class="modal-btn danger" onclick="hideDetailModal()">删除</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Folder Modal -->
+<div class="modal-overlay" id="folderModalOverlay" onclick="closeFolderModal(event)">
+  <div class="folder-modal" onclick="event.stopPropagation()">
+    <div class="folder-modal-head">
+      <div class="folder-modal-title">新建文件夹</div>
+      <button class="folder-modal-close" onclick="hideFolderModal()">×</button>
+    </div>
+    <div class="folder-field">
+      <label for="folderNameInput">文件夹名称</label>
+      <input class="folder-input" id="folderNameInput" placeholder="例如：客户王女士方案">
+    </div>
+    <div class="folder-field">
+      <label>选择要添加的作品</label>
+      <div class="folder-picker" id="folderAssetPicker"></div>
+    </div>
+    <div class="folder-modal-actions">
+      <button class="bulk-btn" onclick="hideFolderModal()">取消</button>
+      <button class="modal-btn primary" style="width:auto;padding:10px 22px;" onclick="createFolder()">创建</button>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/assets.js"></script>
+</body>
+</html>
+
+
